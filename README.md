@@ -1,281 +1,125 @@
 # memobank-skill
 
-One-click memory skill for Claude Code, Codex, and Cursor.
-
-Gives coding agents persistent project memory: past decisions, lessons, and workflows — recalled automatically at the start of each session.
+One‑click installable skill for Claude Code, Codex, and Cursor that gives coding agents persistent project memory: past decisions, lessons, and workflows are recalled automatically at the start of each session, and new learnings are captured at session end.
 
 ## Features
 
-| Feature | Claude Code | Codex | Cursor |
-|---|---------|-------|--------|
-| **Auto-recall at session start** | ✅ `!` injection | ✅ Protocol instruction | ✅ Rules file |
-| **Auto-capture at session end** | ✅ `hooks.Stop` | ⚠️ Manual | ⚠️ Manual |
-| **Vector search (LanceDB)** | ✅ With CLI | ✅ With CLI | ✅ With CLI |
-| **Structured memory files** | ✅ With CLI | ✅ With CLI | ✅ With CLI |
-| **Works without CLI** | ✅ Fallback | ✅ Fallback | ✅ Fallback |
+- 🧠 **Automatic Recall**: `!memo recall` runs before the agent sees your prompt, injecting relevant memories as context.
+- 💾 **Auto‑Capture**: `hooks.Stop` runs `memo capture --auto` after each response to save significant learnings.
+- 🔌 **Platform Support**: 
+  - Claude Code: full skill with hooks
+  - Codex: manual protocol injection into `AGENTS.md`
+  - Cursor: `.cursor/rules/memobank.mdc` rule file (`alwaysApply: true`)
+- 📦 **Zero‑Dependency Fallback**: Works even without `memobank-cli` installed (reads/writes plain `MEMORY.md`).
+- 🛡️ **Secret Sanitization**: CLI redacts API keys, tokens, IPs, etc.
+- 📖 **Comprehensive Docs**: references for memory protocol, platform setup, and fallback usage.
 
-## Quick Start
-
-### Install (one-liner)
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/org/memobank-skill/main/install.sh | bash
-```
-
-Or for a specific platform:
+## Quick Start (One‑Liner)
 
 ```bash
-bash install.sh --claude-code   # Claude Code only
-bash install.sh --codex         # Codex / AGENTS.md
-bash install.sh --cursor        # Cursor rules
+curl -fsSL https://raw.githubusercontent.com/clawde-agent/memobank-skill/main/install.sh | bash
 ```
 
-### Install memobank-cli (recommended)
+This installs the skill for Claude Code, Codex, and Cursor. After installation, restart your agent and try:
 
-For full features (vector search, auto-capture, structured files):
+```
+/memobank deploy the new feature
+/memobank debug the auth flow
+```
+
+## Manual Installation
+
+### Claude Code
+```bash
+mkdir -p ~/.claude/skills/memobank
+cp SKILL.md ~/.claude/skills/memobank/
+cp -r references/ ~/.claude/skills/memobank/references/
+```
+
+### Codex / Manual
+Append the contents of `platform/codex/AGENTS-snippet.md` to your project's `AGENTS.md`.
+
+### Cursor
+```bash
+mkdir -p .cursor/rules
+cp platform/cursor/memobank.mdc .cursor/rules/
+```
+
+## Usage with memobank-cli (Recommended)
+
+For full functionality (vector search, LLM extraction, structured files):
 
 ```bash
 npm install -g memobank-cli
-cd /path/to/your/project
-git init  # if not already a git repo
-memo install
+memo install --all   # sets up directory structure and platform integrations
 ```
 
-## Usage in Claude Code
-
-```
-/memobank deploy the new API
-/memobank debug the auth flow
-/memobank refactor the data pipeline
-```
-
-Claude recalls relevant memories before starting, captures new learnings when done.
-
-### How it works
-
-1. **Dynamic recall** (`!` injection): `memo recall` runs *before* Claude reads the prompt. Top-N memories are inlined as context.
-2. **Auto-capture** (`hooks.Stop`): When Claude finishes, `memo capture --auto` runs silently to extract learnings.
-3. **Token-efficient**: No MCP, no persistent process.
-
-## Configuration (Claude Code)
-
-### autoMemoryDirectory (recommended)
-
-Set where Claude's native auto-memory writes go:
-
-```bash
-memo install --claude-code
-```
-
-Or manually add to `~/.claude/settings.json`:
-
-```json
-{
-  "autoMemoryDirectory": "~/.memobank/<project>/memory/"
-}
-```
-
-Replace `<project>` with your git repo name.
-
-## Without memobank-cli
-
-The skill works without the CLI. Features are reduced but still useful:
-
-✅ **Works:**
-- MEMORY.md is read at session start (fallback)
-- Manual memory writes to MEMORY.md
-- Claude's native auto-memory
-
-❌ **Requires CLI:**
-- Vector search
-- Smart extraction (`memo capture`)
-- Structured memory files in `lessons/`, `decisions/`, etc.
-- Incremental indexing
-
-### Manual memory format
-
-Add to `~/.memobank/<project>/memory/MEMORY.md`:
-
-```markdown
-## [lesson] Redis pool exhaustion (2026-03-17)
-**Tags:** redis, reliability
-
-Use connection pooling with max=10. Close connections in finally blocks.
-
-## [decision] Chose blue-green deploy (2026-03-17)
-**Tags:** deploy, infrastructure
-
-Avoids downtime during deploy. Requires load balancer config.
-```
-
-See [`references/fallback.md`](references/fallback.md) for details.
+Then the skill will automatically use the CLI for:
+- Vector + BM25 hybrid search (LanceDB engine)
+- Smart extraction of memories from session text
+- Organized storage in `lessons/`, `decisions/`, `workflows/`, `architecture/`
+- Secret sanitization and decay scoring
 
 ## Memory Protocol
 
-### When to recall
+See `references/memory-protocol.md` for full details on:
+- When to recall (session start, before starting work)
+- When to write (immediately after learning something significant)
+- Memory types: `lesson`, `decision`, `workflow`, `architecture`
+- Tags, confidence levels, and review dates
+- Sanitization rules (never write API keys, passwords, etc.)
 
-At session start: `memo recall "<current task>"`
+## Commands (when memobank-cli is installed)
 
-### When to write
+| Command | Description |
+|---------|-------------|
+| `memo install` | Initialize memobank directory and platform integrations |
+| `memo recall <query>` | Search memories and update `MEMORY.md` |
+| `memo search <query>` | Debug search without writing `MEMORY.md` |
+| `memo capture [--auto]` | Extract learnings from session text |
+| `memo write <type>` | Create a new memory (interactive or non‑interactive) |
+| `memo index` | Build/update search index |
+| `memo review [--due]` | List memories due for review |
+| `memo map` | Show memory statistics and summary |
+| `memo config` | View/edit local configuration |
 
-Capture immediately when you:
-- **Fix a non-obvious bug** → `memo write lesson`
-- **Make an architectural decision** → `memo write decision`
-- **Discover a repeatable workflow** → `memo write workflow`
-- **Document system architecture** → `memo write architecture`
+## CLAUDE CODE SPECIFIC
 
-### Memory types
+When you invoke `/memobank <task>`:
+1. `!memo recall "$ARGUMENTS"` runs *before* Claude reads your prompt.
+2. Top‑N memories (configured in `meta/config.yaml`) are injected as context.
+3. Claude responds with the benefit of past lessons, decisions, etc.
+4. When Claude finishes, `hooks.Stop` runs `memo capture --auto` to save any significant new learnings from the session.
 
-| Type | When to use |
-|---|---|
-| `lesson` | Something went wrong, fix wasn't obvious |
-| `decision` | You chose X over Y, why |
-| `workflow` | Repeatable step-by-step process |
-| `architecture` | How the system is structured |
+## FALLBACK WITHOUT CLI
 
-### Example
+If `memobank-cli` is not installed, the skill gracefully falls back:
+- Session start: `cat ~/.memobank/<project>/memory/MEMORY.md` (or helpful hint to run `memo install`)
+- You can manually edit `MEMORY.md` to add memories in the format:
 
-```bash
-memo write lesson \
-  --name="Redis pool exhaustion" \
-  --description="Use connection pooling with max=10" \
-  --tags="redis,reliability" \
-  --content="Production timeouts. Root cause: too many open connections. Fixed with pooling."
-```
+  ```markdown
+  ## [lesson] Redis pool exhaustion · high confidence
+  > Use connection pooling with max=10; close connections in finally blocks.
+  > `lessons/2026-02-14-redis-pool.md` · tags: redis, reliability
+  ```
 
-## Commands Reference
+- `memo capture` and structured file storage require the CLI.
 
-### Recall
-```bash
-memo recall "query"                # Retrieve top-N memories
-memo recall "query" --limit=10     # Get more results
-```
-
-### Search
-```bash
-memo search "query"                    # keyword search
-memo search "query" --engine=lancedb   # vector search
-memo search "query" --tag=redis        # filter by tag
-memo search "query" --type=decision    # filter by type
-```
-
-### Review
-```bash
-memo review --due          # show memories flagged for review
-memo review --id <id>      # review specific memory
-```
-
-### Map
-```bash
-memo map                   # visualize memory clusters
-```
-
-## Platform-Specific Setup
-
-### Claude Code
-- See [`references/claude-code.md`](references/claude-code.md)
-- Install: `bash install.sh --claude-code`
-
-### Codex / AGENTS.md
-- See [`references/codex.md`](references/codex.md)
-- Snippet: [`platform/codex/AGENTS-snippet.md`](platform/codex/AGENTS-snippet.md)
-- Install: `bash install.sh --codex`
-
-### Cursor
-- See [`references/cursor.md`](references/cursor.md)
-- Rules file: [`platform/cursor/memobank.mdc`](platform/cursor/memobank.mdc)
-- Install: `bash install.sh --cursor`
-
-## File Structure
-
-```
-memobank-skill/
-├── SKILL.md                              # Main skill (AgentSkills standard)
-├── install.sh                            # One-click installer
-├── README.md
-├── references/
-│   ├── claude-code.md                    # Claude Code setup
-│   ├── codex.md                          # Codex / AGENTS.md setup
-│   ├── cursor.md                         # Cursor setup
-│   ├── memory-protocol.md                # Shared memory protocol
-│   └── fallback.md                       # Operation without CLI
-└── platform/
-    ├── codex/
-    │   └── AGENTS-snippet.md             # Ready-to-paste AGENTS.md section
-    └── cursor/
-        └── memobank.mdc                  # Cursor rules file
-```
-
-## Testing
-
-### Manual smoke test
+## Development & Contributing
 
 ```bash
-# 1. Install skill
-bash install.sh --claude-code
+# Clone the skill repo
+git clone https://github.com/clawde-agent/memobank-skill.git
+cd memobank-skill
 
-# 2. Install CLI (optional)
-npm install -g memobank-cli
-cd /tmp && mkdir test-project && cd test-project && git init
-memo install
+# Run the installer locally for testing
+bash install.sh --claude-code   # or --codex, --cursor
 
-# 3. Write a test memory
-memo write lesson \
-  --name="test-memory" \
-  --description="This is a test" \
-  --tags="test"
-
-# 4. Recall it
-memo recall "test"
-# Expected: MEMORY.md updated with test-memory
-
-# 5. Verify Claude Code loads it
-# Open Claude Code in /tmp/test-project
-# Run: /memobank test task
-# Expected: memory context block appears before Claude's response
+# Verify installation
+ls -la ~/.claude/skills/memobank/
 ```
-
-## Design Decisions
-
-- **`hooks.Stop` instead of PostToolUse**: Fires once per session end, not after every tool call
-- **`!` injection vs static CLAUDE.md**: Fresh retrieval on each invocation, not stale cache
-- **`allowed-tools: Bash(memo *)`**: Scoped auto-approval to only memo commands
-- **Graceful degradation**: Works with or without CLI, with helpful fallback chain
-- **Platform-agnostic protocol**: Same memory rules across Claude Code, Codex, Cursor
-
-## Troubleshooting
-
-### `/memobank` command not found
-
-Restart Claude Code. Skill files are loaded at startup.
-
-### Memory context not appearing
-
-Check that `memo recall` works in your terminal:
-```bash
-memo recall "test"
-```
-
-If memo is not installed, you'll see: "(no memory configured — run: memo install)"
-
-### Auto-capture not working (Claude Code)
-
-Check that the hook is in `~/.claude/skills/memobank/SKILL.md`:
-```yaml
-hooks:
-  Stop:
-    - command: "memo capture --auto 2>/dev/null || true"
-```
-
-## Contributing
-
-Contributions welcome! Please read the design spec in `docs/specs/2026-03-17-memobank-skill-design.md`.
 
 ## License
 
-MIT
+MIT © 2026 Memobank Project
 
-## See Also
-
-- [memobank-cli](https://github.com/org/memobank-cli) — Core CLI for memory management
-- [AgentSkills](https://github.com/Anthropic/agentskills) — Claude Code skills standard
