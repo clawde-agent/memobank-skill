@@ -97,6 +97,28 @@ Recall results label sources: `👥 team` / `👤 personal`.
 
 ---
 
+## Search & Recall Quality
+
+**Recall scoring** combines keyword match, tag overlap, recency decay, and access frequency boost. Frequently recalled memories get up to 1.5× score multiplier.
+
+**Embedding (vector search)** — configure via `memo init` → lancedb engine:
+- **Ollama** — local, no API key needed (model: `mxbai-embed-large`)
+- **OpenAI** — set `OPENAI_API_KEY` (model: `text-embedding-3-small`)
+- **Jina AI** — set `JINA_API_KEY` (model: `jina-embeddings-v3`)
+
+**Reranker** — optional second-pass AI reranking for better precision:
+- **Jina AI** — set `JINA_API_KEY` (model: `jina-reranker-v2-base-multilingual`)
+- **Cohere** — set `COHERE_API_KEY` (model: `rerank-v3.5`)
+
+Enable during `memo init`, or manually in `meta/config.yaml`:
+```yaml
+reranker:
+  enabled: true
+  provider: jina   # or cohere
+```
+
+---
+
 ## Sanitization Rules
 
 **Never include:**
@@ -141,6 +163,14 @@ memo search "query"                      # Keyword search
 memo search "query" --engine=lancedb     # Vector search
 memo search "query" --tag=redis          # Filter by tag
 memo search "query" --type=decision      # Filter by type
+```
+
+### Lifecycle
+```bash
+memo lifecycle report         # Tier distribution + archival candidates
+memo lifecycle --tier core    # Frequently accessed memories (≥10 recalls)
+memo lifecycle flagged        # Memories with multiple corrections
+memo correct <path>           # Record a correction
 ```
 
 ### Team

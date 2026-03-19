@@ -63,7 +63,7 @@ For new users, run the interactive setup:
 memo init    # 4-step interactive TUI (recommended)
 ```
 
-This guides you through: project name → platform selection → team repo (optional) → search engine.
+This guides you through: project name → platform selection → team repo (optional) → search engine → embedding provider (if lancedb) → reranker (optional).
 
 ## Searching Memory
 
@@ -95,6 +95,11 @@ memo scan --fix               # Auto-redact and re-stage
 ```
 
 ## Memory Lifecycle
+
+Frequently accessed memories get a recall boost (log-based, up to 1.5×). Tiers:
+- **core** — recalled ≥10 times, priority retrieval
+- **working** — active memories
+- **peripheral** — no access in 90+ days, archive candidates
 
 ```bash
 memo lifecycle report         # View memory statistics and tiers
