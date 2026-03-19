@@ -14,6 +14,23 @@ allowed-tools: Bash(memo *)
 
 # memobank — Project Memory
 
+## 🚀 Quick Install (One Command)
+
+If this skill is not installed yet, run:
+
+```bash
+bash install.sh --with-cli
+```
+
+This installs both the skill (for Claude Code/Codex/Cursor) AND the CLI tool (memobank-cli).
+
+Or for remote install:
+```bash
+curl -fsSL https://github.com/clawde-agent/memobank-skill/raw/main/install.sh | bash -s -- --with-cli
+```
+
+---
+
 You have access to a structured project memory system. Use it to avoid repeating mistakes, surface relevant context, and accumulate learnings over time.
 
 ## Memory Context

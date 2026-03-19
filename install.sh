@@ -89,6 +89,33 @@ install_cursor() {
   echo -e "${GREEN}✓${NC} Cursor rule installed: $target_file"
 }
 
+# Install CLI
+install_cli() {
+  if command -v memo &>/dev/null; then
+    echo -e "${GREEN}✓${NC} memobank-cli already installed"
+    return
+  fi
+
+  echo "→ Installing memobank-cli from npm..."
+  npm install -g memobank-cli
+
+  if command -v memo &>/dev/null; then
+    echo -e "${GREEN}✓${NC} memobank-cli installed"
+  else
+    echo -e "${YELLOW}⚠${NC} CLI installation failed. Install manually: npm install -g memobank-cli"
+    return
+  fi
+
+  echo ""
+  echo -e "${YELLOW}Now run interactive setup:${NC}"
+  echo "  memo onboarding"
+  echo ""
+  echo -e "${YELLOW}Or import existing memories:${NC}"
+  echo "  memo import --claude    # From Claude Code"
+  echo "  memo import --gemini    # From Gemini CLI"
+  echo "  memo import --qwen      # From Qwen Code"
+}
+
 # Suggest CLI installation
 suggest_cli() {
   if command -v memo &>/dev/null; then
@@ -110,6 +137,8 @@ suggest_cli() {
 
 # Parse arguments
 PLATFORMS=()
+INSTALL_CLI=false
+
 if [[ $# -eq 0 ]]; then
   # Default: install all
   PLATFORMS=("claude-code" "codex" "cursor")
@@ -120,9 +149,10 @@ else
       --codex|codex)             PLATFORMS+=("codex") ;;
       --cursor|cursor)           PLATFORMS+=("cursor") ;;
       --all|all)                 PLATFORMS=("claude-code" "codex" "cursor") ;;
+      --with-cli|cli)            INSTALL_CLI=true ;;
       *)
         echo "Unknown option: $arg"
-        echo "Usage: bash install.sh [--claude-code] [--codex] [--cursor] [--all]"
+        echo "Usage: bash install.sh [--claude-code] [--codex] [--cursor] [--all] [--with-cli]"
         exit 1
         ;;
     esac
@@ -138,8 +168,12 @@ for platform in "${PLATFORMS[@]}"; do
   esac
 done
 
-# Suggest CLI
-suggest_cli
+# Install CLI if requested
+if [[ "$INSTALL_CLI" == true ]]; then
+  install_cli
+else
+  suggest_cli
+fi
 
 # Done
 echo ""

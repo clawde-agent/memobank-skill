@@ -16,7 +16,7 @@ One‑click installable skill for Claude Code, Codex, and Cursor that gives codi
 - 🎯 **Interactive Setup**: Guided configuration with `memo setup`.
 - 📖 **Comprehensive Docs**: references for memory protocol, platform setup, and fallback usage.
 
-## Quick Start (One‑Liner)
+## Quick Start (One-Liner)
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/clawde-agent/memobank-skill/main/install.sh | bash
@@ -27,6 +27,20 @@ This installs the skill for Claude Code, Codex, and Cursor. After installation, 
 ```bash
 memo onboarding    # Interactive setup (recommended for new users)
 ```
+
+### 🤖 Ask Claude Code to Install
+
+Just give Claude Code this repo URL and say:
+
+> "Install this skill for me: https://github.com/clawde-agent/memobank-skill"
+
+Claude Code will run:
+
+```bash
+bash install.sh --with-cli
+```
+
+This installs both the skill AND the CLI tool automatically.
 
 Then start using:
 
