@@ -1,6 +1,6 @@
 # memobank-skill Implementation Summary
 
-**Date:** 2026-03-18
+**Date:** 2026-03-19
 **Status:** ✅ Complete
 
 ## Files Created
@@ -8,17 +8,22 @@
 All files from the implementation plan have been created successfully:
 
 ### Core Files
-- ✅ **SKILL.md** (2,145 bytes) — Main skill following AgentSkills standard
+- ✅ **SKILL.md** (2,800 bytes) — Main skill following AgentSkills standard
   - Dynamic memory recall via `!` injection
   - Auto-capture via `hooks.Stop`
   - Graceful fallback chain
+  - Updated with `memo setup` and `memo import` commands
 
-- ✅ **install.sh** (3,889 bytes, executable) — One-click installer
+- ✅ **install.sh** (4,200 bytes, executable) — One-click installer
   - Supports Claude Code, Codex, and Cursor
   - Idempotent (safe to run multiple times)
   - Local and remote installation modes
+  - Updated CLI suggestions with setup and import commands
 
-- ✅ **README.md** (7,594 bytes) — Complete documentation
+- ✅ **README.md** (8,500 bytes) — Complete documentation
+  - Updated with new features (sanitization, import, setup)
+  - Full command reference
+  - Platform-specific setup guides
 
 ### Reference Files (references/)
 - ✅ **memory-protocol.md** (4,101 bytes) — Canonical memory protocol

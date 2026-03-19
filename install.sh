@@ -96,8 +96,13 @@ suggest_cli() {
   fi
 
   echo ""
-  echo -e "${YELLOW}Tip:${NC} install memobank-cli for vector search + auto-capture:"
-  echo "  npm install -g memobank-cli && memo install"
+  echo -e "${YELLOW}Tip:${NC} install memobank-cli for full functionality:"
+  echo "  npm install -g memobank-cli && memo setup"
+  echo ""
+  echo -e "${YELLOW}Or import existing memories:${NC}"
+  echo "  memo import --claude    # From Claude Code"
+  echo "  memo import --gemini    # From Gemini CLI"
+  echo "  memo import --qwen      # From Qwen Code"
 }
 
 # Parse arguments

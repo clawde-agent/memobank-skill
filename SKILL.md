@@ -52,6 +52,25 @@ memo search "query" --type=decision    # filter by type
 memo review --due    # show memories flagged for re-evaluation
 ```
 
+## Interactive Setup
+
+For guided setup with tool configuration and memory import:
+
+```bash
+memo setup    # Interactive wizard
+```
+
+## Import from Other AI Tools
+
+Import existing memories from Claude Code, Gemini CLI, or Qwen Code:
+
+```bash
+memo import --claude    # Import from Claude Code
+memo import --gemini    # Import from Gemini CLI
+memo import --qwen      # Import from Qwen Code
+memo import --all       # Import from all available tools
+```
+
 ## For Setup Reference
 
 See [references/claude-code.md](references/claude-code.md) for full configuration.

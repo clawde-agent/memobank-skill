@@ -6,12 +6,14 @@ One‑click installable skill for Claude Code, Codex, and Cursor that gives codi
 
 - 🧠 **Automatic Recall**: `!memo recall` runs before the agent sees your prompt, injecting relevant memories as context.
 - 💾 **Auto‑Capture**: `hooks.Stop` runs `memo capture --auto` after each response to save significant learnings.
-- 🔌 **Platform Support**: 
+- 🔌 **Platform Support**:
   - Claude Code: full skill with hooks
   - Codex: manual protocol injection into `AGENTS.md`
   - Cursor: `.cursor/rules/memobank.mdc` rule file (`alwaysApply: true`)
 - 📦 **Zero‑Dependency Fallback**: Works even without `memobank-cli` installed (reads/writes plain `MEMORY.md`).
-- 🛡️ **Secret Sanitization**: CLI redacts API keys, tokens, IPs, etc.
+- 🛡️ **Secret Sanitization**: CLI redacts API keys, tokens, IPs, PII, etc. (20+ patterns).
+- 📥 **Memory Import**: Import from Claude Code, Gemini CLI, Qwen Code.
+- 🎯 **Interactive Setup**: Guided configuration with `memo setup`.
 - 📖 **Comprehensive Docs**: references for memory protocol, platform setup, and fallback usage.
 
 ## Quick Start (One‑Liner)
@@ -74,6 +76,8 @@ See `references/memory-protocol.md` for full details on:
 | Command | Description |
 |---------|-------------|
 | `memo install` | Initialize memobank directory and platform integrations |
+| `memo setup` | Interactive configuration wizard (recommended for first-time setup) |
+| `memo import` | Import memories from other AI tools (Claude Code, Gemini CLI, Qwen Code) |
 | `memo recall <query>` | Search memories and update `MEMORY.md` |
 | `memo search <query>` | Debug search without writing `MEMORY.md` |
 | `memo capture [--auto]` | Extract learnings from session text |

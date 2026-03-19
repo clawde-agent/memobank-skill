@@ -1,0 +1,126 @@
+---
+description: memobank project memory protocol for Cursor
+globs: ["**/*"]
+alwaysApply: true
+---
+
+# Memory Protocol
+
+At the start of every session, read:
+`~/.memobank/<project>/memory/MEMORY.md`
+(replace `<project>` with the git repo name or run `git rev-parse --show-toplevel | xargs basename`)
+
+Or run: `memo recall "<current task description>"`
+
+---
+
+## When to write memories
+
+Write immediately when you:
+- **Fix a non-obvious bug** → `memo write lesson`
+- **Make an architectural decision** → `memo write decision`
+- **Discover a repeatable workflow** → `memo write workflow`
+- **Document system architecture** → `memo write architecture`
+
+Command: `memo write <type> --name="..." --description="..." --tags="..." --content="..."`
+
+### Examples
+
+```bash
+# Lesson: What went wrong and how to fix it
+memo write lesson \
+  --name="Redis pool exhaustion" \
+  --description="Use connection pooling with max=10" \
+  --tags="redis,reliability" \
+  --content="Production timeouts. Root cause: too many open connections. Fixed with pooling and explicit close() in finally blocks."
+
+# Decision: Why you chose X over Y
+memo write decision \
+  --name="Blue-green deploy" \
+  --description="Avoids downtime during deploy" \
+  --tags="deploy,infrastructure" \
+  --content="Chose over rolling update. Zero downtime. Trade-off: requires load balancer config, slower rollback."
+
+# Workflow: Step-by-step repeatable process
+memo write workflow \
+  --name="Local testing with mocked APIs" \
+  --description="Run integration tests without external deps" \
+  --tags="testing,devops" \
+  --content="1. Start mock server on localhost:9999. 2. Set MOCK_API_URL env var. 3. Run pytest. 4. Verify in mock logs."
+
+# Architecture: How the system is structured
+memo write architecture \
+  --name="Event-driven async pipeline" \
+  --description="Decoupled data flow via message queue" \
+  --tags="architecture,async" \
+  --content="Producers emit events to Kafka. Workers consume and process. Results written to ClickHouse. Enables scaling and backpressure handling."
+```
+
+---
+
+## Searching memory
+
+To find specific memories: `memo search "query"`
+
+```bash
+memo search "redis"                      # keyword search (default)
+memo search "redis" --engine=lancedb     # vector search
+memo search "redis" --tag=error           # filter by tag
+memo search "redis" --type=lesson         # filter by type
+```
+
+---
+
+## Session end
+
+Run `memo capture --auto` to extract and store session learnings from auto-memory files.
+
+---
+
+## If memobank-cli is not installed
+
+The protocol still works with manual MEMORY.md edits:
+
+1. Read `~/.memobank/<project>/memory/MEMORY.md` at session start
+2. Append entries directly to MEMORY.md:
+```markdown
+## [lesson] Title (2026-03-17)
+**Tags:** tag1,tag2
+
+Description
+
+## [decision] Title (2026-03-17)
+**Tags:** tag1,tag2
+
+Description
+```
+
+3. No auto-capture (CLI required for `memo capture`)
+
+Install CLI for full features:
+```bash
+npm install -g memobank-cli
+memo install
+```
+
+---
+
+## Memory types
+
+| Type | When to use | Example |
+|---|---|---|
+| `lesson` | Something went wrong, fix wasn't obvious | "Redis pool exhaustion" |
+| `decision` | You chose X over Y, why | "Blue-green deploy" |
+| `workflow` | Repeatable step-by-step process | "Local testing with mocked APIs" |
+| `architecture` | How the system is structured | "Event-driven async pipeline" |
+
+---
+
+## Quality bar
+
+Write memories that would save a future developer time. Skip obvious or trivial things.
+
+Never include:
+- API keys, passwords, tokens
+- IP addresses, sensitive URLs
+- PII (personally identifiable information)
