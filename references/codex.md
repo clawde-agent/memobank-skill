@@ -49,7 +49,7 @@ Types: `lesson` | `decision` | `workflow` | `architecture`
 There's no automatic capture hook in Codex. Manually run at session end:
 
 ```bash
-memo capture --auto --silent
+memo capture --auto 
 ```
 
 ## Team memory (v0.3.0+)

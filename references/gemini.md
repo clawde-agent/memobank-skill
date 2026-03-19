@@ -2,7 +2,7 @@
 
 ## How it works
 
-Gemini CLI reads `~/.gemini/GEMINI.md` as its system prompt file. The memobank adapter appends an instruction to run `memo capture --auto --silent` at the end of each session.
+Gemini CLI reads `~/.gemini/GEMINI.md` as its system prompt file. The memobank adapter appends an instruction to run `memo capture --auto ` at the end of each session.
 
 ## Installation
 
@@ -37,7 +37,7 @@ Or ask Gemini at the start of your session: "Read my project memory for: [task d
 The instruction appended to `GEMINI.md` asks Gemini to run:
 
 ```bash
-memo capture --auto --silent
+memo capture --auto 
 ```
 
 ## Writing memories

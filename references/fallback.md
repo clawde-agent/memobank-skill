@@ -11,7 +11,7 @@ The skill works without `memobank-cli`. Functionality is reduced but still usefu
 ## What requires CLI
 
 - **Vector search** (LanceDB engine) — requires CLI and configured index
-- **Smart extraction** (`memo capture --auto --silent`) — automatic extraction from auto-memory files
+- **Smart extraction** (`memo capture --auto `) — automatic extraction from auto-memory files
 - **Structured memory files** — separate `personal/lesson/`, `personal/decision/`, etc. directories
 - **Team sharing** — `memo team init/sync/publish` requires CLI
 - **Secret scanning** — `memo scan` requires CLI

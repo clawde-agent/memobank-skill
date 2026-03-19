@@ -2,7 +2,7 @@
 
 ## How it works
 
-Qwen Code reads `~/.qwen/QWEN.md` as its system prompt file. The memobank adapter appends an instruction to run `memo capture --auto --silent` at the end of each session.
+Qwen Code reads `~/.qwen/QWEN.md` as its system prompt file. The memobank adapter appends an instruction to run `memo capture --auto ` at the end of each session.
 
 ## Installation
 
@@ -37,7 +37,7 @@ Or ask Qwen at the start of your session: "Read my project memory for: [task des
 The instruction appended to `QWEN.md` asks Qwen to run:
 
 ```bash
-memo capture --auto --silent
+memo capture --auto 
 ```
 
 ## Writing memories

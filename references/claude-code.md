@@ -7,7 +7,7 @@
    are injected as context. Zero MCP overhead.
 
 2. **Auto-capture** (`hooks.Stop`): when Claude finishes responding,
-   `memo capture --auto --silent` runs silently in the background.
+   `memo capture --auto ` runs silently in the background.
    Any significant learnings are extracted and stored as structured memories.
 
 3. **Auto-memory integration**: `memo init` (or `memo install --platform claude-code`)
@@ -60,7 +60,7 @@ Add to `~/.claude/settings.json`:
     "Stop": [
       {
         "matcher": "",
-        "hooks": [{ "type": "command", "command": "memo capture --auto --silent" }]
+        "hooks": [{ "type": "command", "command": "memo capture --auto " }]
       }
     ]
   }
@@ -137,7 +137,7 @@ Check `~/.claude/settings.json` has the Stop hook:
 ```json
 "hooks": {
   "Stop": [
-    { "matcher": "", "hooks": [{ "type": "command", "command": "memo capture --auto --silent" }] }
+    { "matcher": "", "hooks": [{ "type": "command", "command": "memo capture --auto " }] }
   ]
 }
 ```

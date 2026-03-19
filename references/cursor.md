@@ -51,7 +51,7 @@ memo write <type> --name="..." --description="..." --tags="..." --content="..."
 Run manually at session end:
 
 ```bash
-memo capture --auto --silent
+memo capture --auto 
 ```
 
 ## Team memory (v0.3.0+)
