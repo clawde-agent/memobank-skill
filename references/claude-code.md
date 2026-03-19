@@ -7,17 +7,33 @@
    are injected as context. Zero MCP overhead.
 
 2. **Auto-capture** (`hooks.Stop`): when Claude finishes responding,
-   `memo capture --auto` runs silently. Any significant learnings from
-   Claude's auto-memory writes are extracted and stored as structured memories.
+   `memo capture --auto --silent` runs silently in the background.
+   Any significant learnings are extracted and stored as structured memories.
 
-3. **Auto-memory integration**: set `autoMemoryDirectory` in
-   `~/.claude/settings.json` to point to your memobank repo's `memory/`
-   directory. Claude's native auto-memory writes go there, and
-   `memo capture` picks them up.
+3. **Auto-memory integration**: `memo init` (or `memo install --platform claude-code`)
+   sets `autoMemoryDirectory` in `~/.claude/settings.json` to point to your
+   memobank repo's `memory/` directory. Claude's native auto-memory writes go
+   there, and `memo capture` picks them up.
 
 ## Installation
 
-### Option A: Manual
+### Option A: Interactive (recommended)
+
+```bash
+memo init
+```
+
+4-step TUI: project name → platform selection (auto-detects Claude Code) → team repo → search engine.
+
+### Option B: Platform-only install
+
+```bash
+memo install --platform claude-code
+```
+
+Sets `autoMemoryDirectory` and installs the Stop hook in `~/.claude/settings.json`.
+
+### Option C: Manual skill copy
 
 ```bash
 mkdir -p ~/.claude/skills/memobank
@@ -25,25 +41,12 @@ cp SKILL.md ~/.claude/skills/memobank/SKILL.md
 cp -r references/ ~/.claude/skills/memobank/references/
 ```
 
-### Option B: One-liner
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/org/memobank-skill/main/install.sh | bash --claude-code
-```
-
-or
-
-```bash
-bash install.sh --claude-code
-```
-
-## Configure autoMemoryDirectory (recommended)
+## Configure autoMemoryDirectory
 
 ### Option A: Automatic
 
 ```bash
-memo install --claude-code
-# This sets autoMemoryDirectory in ~/.claude/settings.json
+memo install --platform claude-code
 ```
 
 ### Option B: Manual
@@ -52,7 +55,15 @@ Add to `~/.claude/settings.json`:
 
 ```json
 {
-  "autoMemoryDirectory": "~/.memobank/<project>/memory/"
+  "autoMemoryDirectory": "~/.memobank/<project>/memory/",
+  "hooks": {
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [{ "type": "command", "command": "memo capture --auto --silent" }]
+      }
+    ]
+  }
 }
 ```
 
@@ -68,30 +79,42 @@ Replace `<project>` with your git repo name (e.g., `my-webapp`).
 /memobank refactor the auth module
 ```
 
-### Automatic invocation
+### Scoped recall
 
-Claude will invoke the skill automatically when you start a coding task. The memory context appears in the prompt before Claude responds.
+```bash
+memo recall "auth flow" --scope personal   # personal memories only
+memo recall "auth flow" --scope team       # shared team memories only
+memo recall "auth flow" --explain          # show score breakdown
+```
 
-## How auto-recall works
+## Directory structure (v0.3.0+)
 
-When you run `/memobank <task>`:
+Memories are stored in a two-layer layout:
 
-1. The `!`command in SKILL.md runs immediately (before Claude sees your prompt)
-2. `memo recall "<task>"` retrieves matching memories
-3. The memories are inlined into the skill content
-4. Claude reads them as context, then responds to your request
+```
+~/.memobank/<project>/
+├── personal/          # Local only, never synced
+│   ├── lesson/
+│   ├── decision/
+│   ├── workflow/
+│   └── architecture/
+├── team/              # Git-tracked, synced to shared remote
+│   ├── lesson/
+│   └── ...
+├── memory/
+│   └── MEMORY.md      # Last recall result (injected via autoMemoryDirectory)
+└── meta/
+    └── config.yaml
+```
 
-## How auto-capture works
+## Team memory setup
 
-When Claude finishes a session:
-
-1. The `hooks.Stop` hook fires
-2. `memo capture --auto` runs silently
-3. It reads recently written auto-memory files
-4. Extracts structured memories from them
-5. Stores them as `lesson`, `decision`, `workflow`, or `architecture` files
-
-The `|| true` ensures the hook never fails or blocks the session.
+```bash
+memo team init git@github.com:your-org/team-memories.git
+memo team sync                # pull + push
+memo team publish <file>      # promote personal → team
+memo team status              # show git status
+```
 
 ## Troubleshooting
 
@@ -106,15 +129,17 @@ Check that `memo recall` works in your terminal:
 memo recall "test"
 ```
 
-If memo is not installed, you'll see the fallback message: "(no memory configured — run: memo install)"
+If memo is not installed: `npm install -g memobank-cli`
 
 ### Auto-capture not working
 
-Check that the hook is in `~/.claude/skills/memobank/SKILL.md`:
-```yaml
-hooks:
-  Stop:
-    - command: "memo capture --auto 2>/dev/null || true"
+Check `~/.claude/settings.json` has the Stop hook:
+```json
+"hooks": {
+  "Stop": [
+    { "matcher": "", "hooks": [{ "type": "command", "command": "memo capture --auto --silent" }] }
+  ]
+}
 ```
 
 ## See also

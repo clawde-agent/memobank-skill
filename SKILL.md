@@ -6,7 +6,7 @@ description: >
   any coding task, debugging, or architectural work.
 hooks:
   Stop:
-    - command: "memo capture --auto 2>/dev/null || true"
+    - command: "memo capture --auto --silent 2>/dev/null || true"
 user-invocable: true
 disable-model-invocation: false
 allowed-tools: Bash(memo *)
@@ -22,7 +22,7 @@ If this skill is not installed yet, run:
 bash install.sh --with-cli
 ```
 
-This installs both the skill (for Claude Code/Codex/Cursor) AND the CLI tool (memobank-cli).
+This installs both the skill (for Claude Code/Codex/Cursor/Gemini/Qwen) AND the CLI tool (memobank-cli).
 
 Or for remote install:
 ```bash
@@ -35,7 +35,7 @@ You have access to a structured project memory system. Use it to avoid repeating
 
 ## Memory Context
 
-!`memo recall "$ARGUMENTS" 2>/dev/null || cat ~/.memobank/$(git rev-parse --show-toplevel 2>/dev/null | xargs basename 2>/dev/null || echo default)/memory/MEMORY.md 2>/dev/null || echo "(no memory configured — run: memo onboarding)"`
+!`memo recall "$ARGUMENTS" 2>/dev/null || cat ~/.memobank/$(git rev-parse --show-toplevel 2>/dev/null | xargs basename 2>/dev/null || echo default)/memory/MEMORY.md 2>/dev/null || echo "(no memory configured — run: memo init)"`
 
 ## Memory Protocol
 
@@ -59,26 +59,47 @@ Types: `lesson` | `decision` | `workflow` | `architecture`
 For new users, run the interactive setup:
 
 ```bash
-memo onboarding    # Interactive menu (recommended)
-memo init          # Alias for onboarding
+memo init    # 4-step interactive TUI (recommended)
 ```
+
+This guides you through: project name → platform selection → team repo (optional) → search engine.
 
 ## Searching Memory
 
 ```bash
-memo search "query"                    # keyword search (default)
-memo search "query" --engine=lancedb   # vector search (if configured)
-memo search "query" --tag=redis        # filter by tag
-memo search "query" --type=decision    # filter by type
+memo recall "query"                      # search + write to MEMORY.md (primary)
+memo recall "query" --scope personal     # personal memories only
+memo recall "query" --scope team         # team memories only
+memo recall "query" --explain            # show score breakdown (keyword/tags/recency)
+memo search "query"                      # debug search, does not update MEMORY.md
+memo search "query" --engine=lancedb     # vector search (if configured)
+memo search "query" --tag=redis          # filter by tag
+memo search "query" --type=decision      # filter by type
+```
+
+## Team Memory
+
+```bash
+memo team init <remote-url>   # Link shared team memory repo
+memo team sync                # Pull + push team memories
+memo team publish <file>      # Promote a personal memory to team
+memo team status              # Show team repo status
+```
+
+## Secret Scanning
+
+```bash
+memo scan                     # Scan team/ for secrets before pushing
+memo scan --fix               # Auto-redact and re-stage
 ```
 
 ## Memory Lifecycle
 
 ```bash
-memo lifecycle report      # View memory statistics and tiers
-memo lifecycle --tier core # Show frequently accessed memories
-memo lifecycle flagged     # Show memories needing review
-memo correct <path>        # Record a correction
+memo lifecycle report         # View memory statistics and tiers
+memo lifecycle --tier core    # Show frequently accessed memories
+memo lifecycle flagged        # Show memories needing review
+memo correct <path>           # Record a correction
 ```
 
 ## Checking Review Reminders

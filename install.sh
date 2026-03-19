@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # memobank-skill installer
 # Usage: curl -fsSL https://raw.githubusercontent.com/org/memobank-skill/main/install.sh | bash
-#        Or: bash install.sh [--claude-code] [--codex] [--cursor] [--all]
+#        Or: bash install.sh [--claude-code] [--codex] [--cursor] [--gemini] [--qwen] [--all]
 
 set -euo pipefail
 
@@ -23,13 +23,13 @@ install_claude_code() {
   if [[ -f "./SKILL.md" ]]; then
     # Local install
     cp SKILL.md "$SKILL_DIR/SKILL.md"
-    for f in claude-code.md memory-protocol.md fallback.md codex.md cursor.md; do
+    for f in claude-code.md memory-protocol.md fallback.md codex.md cursor.md gemini.md qwen.md; do
       [[ -f "./references/$f" ]] && cp "./references/$f" "$SKILL_DIR/references/$f"
     done
   else
     # Remote install
     curl -fsSL "$SKILL_REPO/raw/main/SKILL.md" -o "$SKILL_DIR/SKILL.md"
-    for f in claude-code.md memory-protocol.md fallback.md codex.md cursor.md; do
+    for f in claude-code.md memory-protocol.md fallback.md codex.md cursor.md gemini.md qwen.md; do
       curl -fsSL "$SKILL_REPO/raw/main/references/$f" -o "$SKILL_DIR/references/$f"
     done
   fi
@@ -64,6 +64,66 @@ install_codex() {
   fi
 
   echo -e "${GREEN}✓${NC} Memory protocol appended to AGENTS.md"
+}
+
+# Install for Gemini CLI
+install_gemini() {
+  echo "→ Configuring Gemini CLI (~/.gemini/GEMINI.md)..."
+
+  local gemini_dir="${HOME}/.gemini"
+  local target_file="$gemini_dir/GEMINI.md"
+  mkdir -p "$gemini_dir"
+
+  # Check if already installed
+  if grep -q "memobank" "$target_file" 2>/dev/null; then
+    echo -e "${GREEN}✓${NC} memobank already in GEMINI.md"
+    return
+  fi
+
+  local snippet
+  if [[ -f "./platform/gemini/GEMINI-snippet.md" ]]; then
+    snippet=$(cat ./platform/gemini/GEMINI-snippet.md)
+  else
+    snippet="## Memory Protocol (memobank)
+
+At the end of each session, run: \`memo capture --auto --silent\`
+At the start of each session, recall: \`memo recall \"<current task>\"\`"
+  fi
+
+  echo "" >> "$target_file"
+  echo "$snippet" >> "$target_file"
+
+  echo -e "${GREEN}✓${NC} Memory protocol appended to ~/.gemini/GEMINI.md"
+}
+
+# Install for Qwen Code
+install_qwen() {
+  echo "→ Configuring Qwen Code (~/.qwen/QWEN.md)..."
+
+  local qwen_dir="${HOME}/.qwen"
+  local target_file="$qwen_dir/QWEN.md"
+  mkdir -p "$qwen_dir"
+
+  # Check if already installed
+  if grep -q "memobank" "$target_file" 2>/dev/null; then
+    echo -e "${GREEN}✓${NC} memobank already in QWEN.md"
+    return
+  fi
+
+  local snippet
+  if [[ -f "./platform/qwen/QWEN-snippet.md" ]]; then
+    snippet=$(cat ./platform/qwen/QWEN-snippet.md)
+  else
+    snippet="## Memory Protocol (memobank)
+
+At the end of each session, run: \`memo capture --auto --silent\`
+At the start of each session, recall: \`memo recall \"<current task>\"\`"
+  fi
+
+  echo "" >> "$target_file"
+  echo "$snippet" >> "$target_file"
+
+  echo -e "${GREEN}✓${NC} Memory protocol appended to ~/.qwen/QWEN.md"
 }
 
 # Install for Cursor
@@ -108,7 +168,7 @@ install_cli() {
 
   echo ""
   echo -e "${YELLOW}Now run interactive setup:${NC}"
-  echo "  memo onboarding"
+  echo "  memo init"
   echo ""
   echo -e "${YELLOW}Or import existing memories:${NC}"
   echo "  memo import --claude    # From Claude Code"
@@ -127,7 +187,7 @@ suggest_cli() {
   echo "  npm install -g memobank-cli"
   echo ""
   echo -e "${YELLOW}Then run interactive setup:${NC}"
-  echo "  memo onboarding"
+  echo "  memo init"
   echo ""
   echo -e "${YELLOW}Or import existing memories:${NC}"
   echo "  memo import --claude    # From Claude Code"
@@ -141,18 +201,20 @@ INSTALL_CLI=false
 
 if [[ $# -eq 0 ]]; then
   # Default: install all
-  PLATFORMS=("claude-code" "codex" "cursor")
+  PLATFORMS=("claude-code" "codex" "cursor" "gemini" "qwen")
 else
   for arg in "$@"; do
     case "$arg" in
       --claude-code|claude-code) PLATFORMS+=("claude-code") ;;
       --codex|codex)             PLATFORMS+=("codex") ;;
       --cursor|cursor)           PLATFORMS+=("cursor") ;;
-      --all|all)                 PLATFORMS=("claude-code" "codex" "cursor") ;;
+      --gemini|gemini)           PLATFORMS+=("gemini") ;;
+      --qwen|qwen)               PLATFORMS+=("qwen") ;;
+      --all|all)                 PLATFORMS=("claude-code" "codex" "cursor" "gemini" "qwen") ;;
       --with-cli|cli)            INSTALL_CLI=true ;;
       *)
         echo "Unknown option: $arg"
-        echo "Usage: bash install.sh [--claude-code] [--codex] [--cursor] [--all] [--with-cli]"
+        echo "Usage: bash install.sh [--claude-code] [--codex] [--cursor] [--gemini] [--qwen] [--all] [--with-cli]"
         exit 1
         ;;
     esac
@@ -165,6 +227,8 @@ for platform in "${PLATFORMS[@]}"; do
     claude-code) install_claude_code ;;
     codex)       install_codex ;;
     cursor)      install_cursor ;;
+    gemini)      install_gemini ;;
+    qwen)        install_qwen ;;
   esac
 done
 

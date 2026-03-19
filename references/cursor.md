@@ -2,117 +2,74 @@
 
 ## How it works
 
-Cursor uses `.cursor/rules/*.mdc` files (Markdown with frontmatter) to enforce agent behavior. The memobank rule file (`memobank.mdc`) ensures the memory protocol is loaded every session via `alwaysApply: true`.
+Cursor uses `.cursor/rules/*.mdc` files to enforce agent behavior. The memobank rule file (`memobank.mdc`) ensures the memory protocol is loaded every session via `alwaysApply: true`.
 
 ## Installation
 
-### Option A: Manual
-
-1. Copy `platform/cursor/memobank.mdc`
-2. Place it in your project root: `.cursor/rules/memobank.mdc`
-3. Ensure `memobank-cli` is installed (optional but recommended):
-   ```bash
-   npm install -g memobank-cli
-   memo install
-   ```
-
-### Option B: Using install.sh
+### Option A: Interactive (recommended)
 
 ```bash
-bash install.sh --cursor
+memo init
 ```
 
-This creates `.cursor/rules/memobank.mdc` in the current directory.
+Select "Cursor" in the platform multi-select step.
+
+### Option B: Platform-only
+
+```bash
+memo install --platform cursor
+```
+
+Creates `.cursor/rules/memobank.mdc` in the current directory.
+
+### Option C: Manual
+
+Copy `platform/cursor/memobank.mdc` to `.cursor/rules/memobank.mdc` in your project root.
 
 ## How the rule works
 
-The `.cursor/rules/memobank.mdc` file has:
-
-```markdown
----
-description: memobank project memory protocol for Cursor
-globs: ["**/*"]
-alwaysApply: true
----
-```
-
-- `globs: ["**/*"]` — Applies to all files in the project
-- `alwaysApply: true` — Loads on every session (no need to manually invoke)
-
-Cursor agents will read this rule at the start of every session.
+- `globs: ["**/*"]` — Applies to all files
+- `alwaysApply: true` — Loads on every session
 
 ## Memory retrieval in Cursor
 
-Unlike Claude Code, Cursor **does not support `!` command injection**. You must manually recall memory:
+Unlike Claude Code, Cursor **does not support `!` command injection**. Recall is manual:
 
 1. Start a Cursor session
 2. The memobank rule is automatically loaded
-3. Ask Cursor: "Recall project memory for: [describe your task]"
-4. Cursor will run `memo recall "[your task]"`
-5. Or if CLI is not installed, Cursor will read MEMORY.md directly
+3. Ask Cursor: "Recall project memory for: [your task]"
+4. Cursor runs `memo recall "[your task]"`
 
-The rule instructs Cursor to:
-- Read `~/.memobank/<project>/memory/MEMORY.md` at session start
-- Or run `memo recall "<current task description>"
+## Writing memories
 
-## Writing memories during the session
-
-When something significant happens, tell Cursor:
-
-> "Write this as a [lesson|decision|workflow|architecture] memory: [describe what happened]"
-
-Cursor will run:
 ```bash
 memo write <type> --name="..." --description="..." --tags="..." --content="..."
 ```
 
-## Auto-capture (session end)
+## Session end
 
-There's no automatic capture hook in Cursor. You must manually run at session end:
+Run manually at session end:
 
-> "Capture the session learnings"
-
-Cursor will run:
 ```bash
-memo capture --auto
+memo capture --auto --silent
+```
+
+## Team memory (v0.3.0+)
+
+```bash
+memo team init <remote-url>
+memo team sync
+memo team publish <file>
 ```
 
 ## Searching memory
 
-To find specific memories:
-
-> "Search project memory for: [query]"
-
-Cursor will run:
 ```bash
-memo search "query"                    # keyword search
-memo search "query" --engine=lancedb   # vector search (with CLI)
-memo search "query" --tag=redis        # filter by tag
+memo recall "query"                      # Primary: retrieve + write MEMORY.md
+memo search "query"                      # Debug search
+memo search "query" --engine=lancedb     # Vector search
+memo search "query" --tag=redis          # Filter by tag
 ```
-
-## Where memory is stored
-
-Memory files live in:
-```
-~/.memobank/<project>/memory/
-├── MEMORY.md           # Consolidated view (plain text)
-├── lessons/            # Structured lesson files (with CLI)
-├── decisions/          # Structured decision files (with CLI)
-├── workflows/          # Structured workflow files (with CLI)
-└── architecture/       # Structured architecture files (with CLI)
-```
-
-Replace `<project>` with your git repo name (e.g., `my-webapp`).
-
-## Without memobank-cli
-
-If you don't have the CLI, the memory protocol still works:
-
-1. **Read MEMORY.md** — `~/.memobank/<project>/memory/MEMORY.md` is loaded at session start
-2. **Write manually** — append entries directly to MEMORY.md
-3. **No auto-capture** — you must manually capture learnings from auto-memory files
-
-See [references/fallback.md](fallback.md) for the manual MEMORY.md format.
 
 ## Differences from Claude Code
 
@@ -121,42 +78,7 @@ See [references/fallback.md](fallback.md) for the manual MEMORY.md format.
 | Dynamic recall (`!` injection) | ✅ Yes | ❌ No (manual) |
 | Auto-capture (hooks.Stop) | ✅ Yes | ❌ No (manual) |
 | Rule-based protocol (alwaysApply) | — | ✅ Yes |
-| `/memobank` invocation | ✅ Direct command | ❌ No |
-
-Cursor's rule system is powerful but lacks Claude Code's hooks. You must manually trigger recall and capture.
-
-## Cursor rules file template
-
-The ready-to-use file is `platform/cursor/memobank.mdc`:
-
-```markdown
----
-description: memobank project memory protocol for Cursor
-globs: ["**/*"]
-alwaysApply: true
----
-
-# Memory Protocol
-
-At the start of every session, read:
-`~/.memobank/<project>/memory/MEMORY.md`
-(replace `<project>` with the git repo name)
-
-Or run: `memo recall "<current task description>"`
-
-## When to write memories
-
-Write immediately when you:
-- Fix a non-obvious bug → `memo write lesson`
-- Make an architectural decision → `memo write decision`
-- Discover a repeatable workflow → `memo write workflow`
-
-Command: `memo write <type> --name="..." --description="..." --tags="..." --content="..."`
-
-## Session end
-
-Run `memo capture --auto` to extract and store session learnings.
-```
+| `/memobank` invocation | ✅ Direct | ❌ No |
 
 ## See also
 
