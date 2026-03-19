@@ -22,7 +22,13 @@ One‑click installable skill for Claude Code, Codex, and Cursor that gives codi
 curl -fsSL https://raw.githubusercontent.com/clawde-agent/memobank-skill/main/install.sh | bash
 ```
 
-This installs the skill for Claude Code, Codex, and Cursor. After installation, restart your agent and try:
+This installs the skill for Claude Code, Codex, and Cursor. After installation, run:
+
+```bash
+memo onboarding    # Interactive setup (recommended for new users)
+```
+
+Then start using:
 
 ```
 /memobank deploy the new feature
@@ -75,17 +81,19 @@ See `references/memory-protocol.md` for full details on:
 
 | Command | Description |
 |---------|-------------|
-| `memo install` | Initialize memobank directory and platform integrations |
-| `memo setup` | Interactive configuration wizard (recommended for first-time setup) |
+| `memo onboarding` | Interactive setup wizard (recommended for new users) |
+| `memo init` | Alias for onboarding |
+| `memo install` | Initialize memobank directory structure |
 | `memo import` | Import memories from other AI tools (Claude Code, Gemini CLI, Qwen Code) |
 | `memo recall <query>` | Search memories and update `MEMORY.md` |
 | `memo search <query>` | Debug search without writing `MEMORY.md` |
 | `memo capture [--auto]` | Extract learnings from session text |
 | `memo write <type>` | Create a new memory (interactive or non‑interactive) |
-| `memo index` | Build/update search index |
+| `memo index` | Build/update search index (for LanceDB engine) |
 | `memo review [--due]` | List memories due for review |
 | `memo map` | Show memory statistics and summary |
-| `memo config` | View/edit local configuration |
+| `memo lifecycle` | View memory lifecycle report (tiers, access patterns) |
+| `memo correct <path>` | Record a correction for a memory |
 
 ## CLAUDE CODE SPECIFIC
 

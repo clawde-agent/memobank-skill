@@ -8,22 +8,23 @@
 All files from the implementation plan have been created successfully:
 
 ### Core Files
-- ✅ **SKILL.md** (2,800 bytes) — Main skill following AgentSkills standard
+- ✅ **SKILL.md** (3,200 bytes) — Main skill following AgentSkills standard
   - Dynamic memory recall via `!` injection
   - Auto-capture via `hooks.Stop`
   - Graceful fallback chain
-  - Updated with `memo setup` and `memo import` commands
+  - Updated with `memo onboarding`, lifecycle, and import commands
 
-- ✅ **install.sh** (4,200 bytes, executable) — One-click installer
+- ✅ **install.sh** (4,300 bytes, executable) — One-click installer
   - Supports Claude Code, Codex, and Cursor
   - Idempotent (safe to run multiple times)
   - Local and remote installation modes
-  - Updated CLI suggestions with setup and import commands
+  - Updated CLI suggestions with onboarding flow
 
-- ✅ **README.md** (8,500 bytes) — Complete documentation
+- ✅ **README.md** (9,000 bytes) — Complete documentation
   - Updated with new features (sanitization, import, setup)
-  - Full command reference
+  - Full command reference including lifecycle management
   - Platform-specific setup guides
+  - Interactive onboarding documentation
 
 ### Reference Files (references/)
 - ✅ **memory-protocol.md** (4,101 bytes) — Canonical memory protocol

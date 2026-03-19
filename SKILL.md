@@ -18,7 +18,7 @@ You have access to a structured project memory system. Use it to avoid repeating
 
 ## Memory Context
 
-!`memo recall "$ARGUMENTS" 2>/dev/null || cat ~/.memobank/$(git rev-parse --show-toplevel 2>/dev/null | xargs basename 2>/dev/null || echo default)/memory/MEMORY.md 2>/dev/null || echo "(no memory configured — run: memo install)"`
+!`memo recall "$ARGUMENTS" 2>/dev/null || cat ~/.memobank/$(git rev-parse --show-toplevel 2>/dev/null | xargs basename 2>/dev/null || echo default)/memory/MEMORY.md 2>/dev/null || echo "(no memory configured — run: memo onboarding)"`
 
 ## Memory Protocol
 
@@ -37,6 +37,15 @@ Types: `lesson` | `decision` | `workflow` | `architecture`
 
 **You do NOT need to call `memo capture` at the end** — the Stop hook does it automatically.
 
+## First-Time Setup
+
+For new users, run the interactive setup:
+
+```bash
+memo onboarding    # Interactive menu (recommended)
+memo init          # Alias for onboarding
+```
+
 ## Searching Memory
 
 ```bash
@@ -46,23 +55,22 @@ memo search "query" --tag=redis        # filter by tag
 memo search "query" --type=decision    # filter by type
 ```
 
+## Memory Lifecycle
+
+```bash
+memo lifecycle report      # View memory statistics and tiers
+memo lifecycle --tier core # Show frequently accessed memories
+memo lifecycle flagged     # Show memories needing review
+memo correct <path>        # Record a correction
+```
+
 ## Checking Review Reminders
 
 ```bash
 memo review --due    # show memories flagged for re-evaluation
 ```
 
-## Interactive Setup
-
-For guided setup with tool configuration and memory import:
-
-```bash
-memo setup    # Interactive wizard
-```
-
 ## Import from Other AI Tools
-
-Import existing memories from Claude Code, Gemini CLI, or Qwen Code:
 
 ```bash
 memo import --claude    # Import from Claude Code
