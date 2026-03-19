@@ -6,7 +6,8 @@ description: >
   any coding task, debugging, or architectural work.
 hooks:
   Stop:
-    - command: "memo capture --auto --silent 2>/dev/null || true"
+    - command: "memo capture --auto 2>/dev/null || true"
+      async: true
 user-invocable: true
 disable-model-invocation: false
 allowed-tools: Bash(memo *)
