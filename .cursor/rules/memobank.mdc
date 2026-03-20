@@ -6,11 +6,12 @@ alwaysApply: true
 
 # Memory Protocol
 
-At the start of every session, read:
-`~/.memobank/<project>/memory/MEMORY.md`
-(replace `<project>` with the git repo name or run `git rev-parse --show-toplevel | xargs basename`)
+At the start of every session, run:
+```bash
+memo recall "<current task description>"
+```
 
-Or run: `memo recall "<current task description>"`
+Or read `.memobank/MEMORY.md` in your project root.
 
 ---
 
@@ -81,7 +82,7 @@ Run `memo capture --auto` to extract and store session learnings from auto-memor
 
 The protocol still works with manual MEMORY.md edits:
 
-1. Read `~/.memobank/<project>/memory/MEMORY.md` at session start
+1. Read `.memobank/MEMORY.md` at session start (project root)
 2. Append entries directly to MEMORY.md:
 ```markdown
 ## [lesson] Title (2026-03-17)

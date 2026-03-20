@@ -7,7 +7,7 @@ You have access to project memory. Use it every session.
 memo recall "<current task description>"
 ```
 
-Or read `~/.memobank/<project>/memory/MEMORY.md` directly (replace `<project>` with the git repo name).
+Or read `.memobank/MEMORY.md` directly in your project root.
 
 **During session:** When you learn something significant, write it:
 ```bash
@@ -28,24 +28,25 @@ memo write decision --name="Blue-green deploy" --description="Avoids downtime du
 memo write workflow --name="Local testing with mocked APIs" --description="Run integration tests without external deps" --tags="testing,devops" --content="..."
 ```
 
-**Session end:** Run `memo capture --auto --silent` to extract and store learnings.
+**Session end:** Run `memo capture --auto` to extract and store learnings.
 
 **Search:** `memo recall "query"` to retrieve relevant memories (also updates MEMORY.md).
 ```bash
 memo recall "redis"                          # keyword search + write MEMORY.md
-memo recall "redis" --scope team             # team memories only
+memo recall "redis" --scope project          # project (team) memories only
+memo recall "redis" --scope personal         # personal memories only
 memo recall "redis" --explain                # show score breakdown
 memo search "redis" --engine=lancedb         # vector search (debug, no MEMORY.md update)
 ```
 
-**Team memory:**
+**Workspace memory:**
 ```bash
-memo team sync                               # pull + push shared memories
-memo team publish <file>                     # promote personal → team
+memo workspace sync                          # pull + push shared org memories
+memo workspace publish <file>                # promote project → workspace
 ```
 
 **If memobank-cli is not installed:**
-Manually edit `~/.memobank/<project>/memory/MEMORY.md`:
+Manually edit `.memobank/MEMORY.md` in your project:
 ```markdown
 ## [lesson] Title (date)
 **Tags:** tag1,tag2
@@ -58,4 +59,4 @@ Description
 Description
 ```
 
-Run `npm install -g memobank-cli && memo init` for full features.
+Run `npm install -g memobank-cli && memo onboarding` for full features.

@@ -54,12 +54,12 @@ Run manually at session end:
 memo capture --auto 
 ```
 
-## Team memory (v0.3.0+)
+## Workspace memory
 
 ```bash
-memo team init <remote-url>
-memo team sync
-memo team publish <file>
+memo workspace init <remote-url>
+memo workspace sync
+memo workspace publish <file>
 ```
 
 ## Searching memory

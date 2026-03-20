@@ -11,15 +11,15 @@ The skill works without `memobank-cli`. Functionality is reduced but still usefu
 ## What requires CLI
 
 - **Vector search** (LanceDB engine) — requires CLI and configured index
-- **Smart extraction** (`memo capture --auto `) — automatic extraction from auto-memory files
-- **Structured memory files** — separate `personal/lesson/`, `personal/decision/`, etc. directories
-- **Team sharing** — `memo team init/sync/publish` requires CLI
+- **Smart extraction** (`memo capture --auto`) — automatic extraction from auto-memory files
+- **Structured memory files** — separate `lesson/`, `decision/`, etc. directories per tier
+- **Workspace sharing** — `memo workspace init/sync/publish` requires CLI
 - **Secret scanning** — `memo scan` requires CLI
 - **Incremental indexing** — automatic updates when memories are added
 
 ## Manual memory format (without CLI)
 
-Add entries to `~/.memobank/<project>/memory/MEMORY.md`:
+Add entries to `.memobank/MEMORY.md` in your project:
 
 ```markdown
 # Project Memory — <project>
@@ -52,7 +52,7 @@ Avoids downtime during deploy. Requires load balancer config. Trade-off: slower 
 The skill's `!` injection attempts these in order:
 
 1. `memo recall "$ARGUMENTS"` — CLI retrieval
-2. `cat ~/.memobank/.../MEMORY.md` — fallback: last cached MEMORY.md
+2. `cat .memobank/MEMORY.md` — fallback: last cached MEMORY.md in project tier
 3. `echo "(no memory configured...)"` — final: graceful message
 
 ## Installing the CLI
@@ -61,23 +61,37 @@ The skill's `!` injection attempts these in order:
 npm install -g memobank-cli
 
 cd /path/to/your/project
-memo init    # Interactive 4-step setup
+memo onboarding    # Interactive setup
 ```
 
-## Directory structure (v0.3.0+)
+## Directory structure (v0.5.0+)
 
 ```
-~/.memobank/<project>/
-├── personal/          # Local only
-│   ├── lesson/
-│   ├── decision/
-│   ├── workflow/
-│   └── architecture/
-├── team/              # Synced to shared remote (optional)
-├── memory/
-│   └── MEMORY.md      # Last recall result
+Personal tier (private, never committed):
+~/.memobank/<project-name>/
+├── lesson/
+├── decision/
+├── workflow/
+├── architecture/
 └── meta/
     └── config.yaml
+
+Project tier (committed alongside code):
+<repo-root>/.memobank/
+├── lesson/
+├── decision/
+├── workflow/
+├── architecture/
+├── MEMORY.md      ← recall output, read at session start
+└── meta/
+    └── config.yaml
+
+Workspace tier (org-wide, local clone of remote):
+~/.memobank/_workspace/<workspace-name>/
+├── lesson/
+├── decision/
+├── workflow/
+└── architecture/
 ```
 
 ## Limitations without CLI
@@ -85,14 +99,14 @@ memo init    # Interactive 4-step setup
 - No smart capture — must manually extract learnings
 - No recall/search — must read MEMORY.md directly
 - No review reminders
-- No team sharing
+- No workspace sharing
 - No secret scanning
 
 ## When to upgrade to CLI
 
 - You have >20 memories and manual upkeep is painful
 - You want automatic capture from Claude's auto-memory
-- You want to share memories with your team
+- You want to share memories with your team or org
 - You need semantic search (LanceDB engine)
 
 ## See also

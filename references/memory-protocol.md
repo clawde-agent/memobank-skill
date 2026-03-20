@@ -19,8 +19,9 @@ This retrieves top-N memories, writes them to MEMORY.md, and prints them.
 **Scope options:**
 ```bash
 memo recall "query" --scope personal   # personal memories only
-memo recall "query" --scope team       # team memories only
-memo recall "query" --scope all        # both (default)
+memo recall "query" --scope project    # project (team) memories only
+memo recall "query" --scope workspace  # org-wide workspace only
+memo recall "query" --scope all        # all tiers (default)
 memo recall "query" --explain          # show keyword/tags/recency score breakdown
 ```
 
@@ -83,17 +84,17 @@ memo write architecture \
 
 ---
 
-## Team Memory
+## Workspace Memory (Org-Wide)
 
-Share memories across the team via a shared Git remote:
+Share memories across the organization via a shared Git remote:
 
 ```bash
-memo team init git@github.com:your-org/team-memories.git
-memo team publish personal/lesson/2026-03-19-redis-pooling.md
-memo team sync    # pull + push
+memo workspace init git@github.com:your-org/platform-docs.git
+memo workspace publish .memobank/lesson/2026-03-19-redis-pooling.md
+memo workspace sync    # pull + push
 ```
 
-Recall results label sources: `👥 team` / `👤 personal`.
+Recall results label sources: `[workspace]` / `[project]` / `[personal]`.
 
 ---
 
@@ -127,7 +128,7 @@ reranker:
 - PII (personally identifiable information)
 - Secret URLs or endpoints
 
-Run `memo scan --fix` before publishing to team to auto-redact detected secrets.
+Run `memo scan --fix` before publishing to workspace to auto-redact detected secrets.
 
 **Always include:**
 - What went wrong (the problem)
@@ -148,7 +149,8 @@ Write memories that would save a future developer time. Skip obvious or trivial 
 ```bash
 memo recall "query"                      # Retrieve top-N + write MEMORY.md
 memo recall "query" --scope personal     # Personal only
-memo recall "query" --scope team         # Team only
+memo recall "query" --scope project      # Project (team) only
+memo recall "query" --scope workspace    # Org-wide only
 memo recall "query" --explain            # Show score breakdown
 ```
 
@@ -167,23 +169,24 @@ memo search "query" --type=decision      # Filter by type
 
 ### Lifecycle
 ```bash
-memo lifecycle report         # Tier distribution + archival candidates
-memo lifecycle --tier core    # Frequently accessed memories (≥10 recalls)
-memo lifecycle flagged        # Memories with multiple corrections
+memo lifecycle                # View lifecycle report
+memo lifecycle --scan         # Run full scan, downgrade stale memories
+memo lifecycle --reset-epoch  # Reset epoch for team handoff
 memo correct <path>           # Record a correction
 ```
 
-### Team
+### Workspace
 ```bash
-memo team init <remote-url>
-memo team sync
-memo team publish <file>
-memo team status
+memo workspace init <remote-url>
+memo workspace sync
+memo workspace sync --push
+memo workspace publish <file>
+memo workspace status
 ```
 
 ### Scan
 ```bash
-memo scan              # Scan team/ for secrets
+memo scan              # Scan .memobank/ for secrets
 memo scan --fix        # Auto-redact and re-stage
 ```
 

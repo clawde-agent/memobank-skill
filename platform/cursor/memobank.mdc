@@ -12,8 +12,7 @@ At the start of every session, recall relevant memories:
 memo recall "<current task description>"
 ```
 
-Or read: `~/.memobank/<project>/memory/MEMORY.md`
-(replace `<project>` with: `git rev-parse --show-toplevel | xargs basename`)
+Or read: `.memobank/MEMORY.md` in your project root.
 
 ---
 
@@ -51,7 +50,8 @@ memo write decision \
 
 ```bash
 memo recall "query"                          # Primary: retrieve + write MEMORY.md
-memo recall "query" --scope team             # team memories only
+memo recall "query" --scope project          # project (team) memories only
+memo recall "query" --scope personal         # personal memories only
 memo recall "query" --explain                # show score breakdown
 memo search "query" --engine=lancedb         # vector search (debug only)
 memo search "query" --tag=redis              # filter by tag
@@ -59,18 +59,18 @@ memo search "query" --tag=redis              # filter by tag
 
 ---
 
-## Team memory
+## Workspace memory
 
 ```bash
-memo team sync                               # pull + push shared memories
-memo team publish <file>                     # promote personal → team
+memo workspace sync                          # pull + push shared org memories
+memo workspace publish <file>                # promote project → workspace
 ```
 
 ---
 
 ## Session end
 
-Run `memo capture --auto --silent` to extract and store session learnings.
+Run `memo capture --auto` to extract and store session learnings.
 
 ---
 

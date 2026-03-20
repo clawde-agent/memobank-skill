@@ -1,74 +1,125 @@
-# memobank-skill
+# memobank
 
-One‑click installable skill for Claude Code, Codex, Cursor, Gemini CLI, and Qwen Code that gives coding agents persistent memory across three tiers: personal (private), project (team, Git-committed), and workspace (org-wide). Past decisions, lessons, and workflows are recalled automatically at the start of each session, and new learnings are captured at session end.
+AI agents forget everything between sessions.
+Static files like CLAUDE.md go stale and require manual upkeep.
+Cloud memory APIs add external services your team doesn't own or control.
 
-## Three-Tier Memory Model
+**memobank gives AI agents persistent, structured memory that lives in your Git repo** —
+versioned alongside code, reviewed as PRs, and loaded automatically at session start.
 
-Memobank organizes memory into three tiers with distinct scopes and use cases:
+- **Personal** — private lessons and preferences, never committed
+- **Team** — shared knowledge that travels with the codebase
+- **Workspace** — cross-repo patterns, synced via a separate Git remote
 
-| Tier | Location | Committed | Who sees it |
-|------|----------|-----------|-------------|
-| **Personal** | `~/.memobank/<project>/` | Never | Only you |
-| **Project** | `<repo-root>/.memobank/` | Yes, like source code | Everyone who clones the repo |
-| **Workspace** | `~/.memobank/_workspace/<name>/` | To a remote Git repo | Entire organization |
+Works with Claude Code, Cursor, Codex, Gemini CLI, and Qwen Code.
+Zero external services required.
 
-**Personal** — Private drafts, machine-specific notes, personal experiments. Never shared.
+---
 
-**Project** — The team memory that lives with the code. Adding a memory = adding a file in a PR. Reviewing a memory = code review. History = `git log`. Zero extra ceremony.
+## Get started
 
-**Workspace** — Cross-repo organizational knowledge: inter-service contracts, platform patterns, company-wide architecture decisions. Backed by any Git repo; updates flow through standard PRs on that repo.
-
-**Recall priority:** Project > Personal > Workspace. All configured tiers are searched and merged automatically on every `memo recall`.
-
-## Features
-
-- 🗂️ **Three-Tier Memory** — Personal (private), Project (team, Git-committed), Workspace (org-wide, optional remote Git repo)
-- 🧠 **Automatic Recall**: `!memo recall` runs before the agent sees your prompt, injecting relevant memories as context.
-- 💾 **Auto‑Capture**: `hooks.Stop` runs `memo capture --auto` after each response to save significant learnings.
-- 📈 **Status Lifecycle**: `experimental → active → needs-review → deprecated` driven by recall frequency. Stale memories fade automatically.
-- 🔍 **Scoped Recall**: `--scope personal|project|workspace` and `--explain` score breakdown.
-- 🌐 **Workspace Sharing**: `memo workspace init/sync/publish` — promote project memories to org-wide knowledge via standard Git PRs.
-- 🔌 **Platform Support**:
-  - Claude Code: full skill with hooks and dynamic `!` recall injection
-  - Codex: memory protocol injection into `AGENTS.md`
-  - Cursor: `.cursor/rules/memobank.mdc` rule file (`alwaysApply: true`)
-  - Gemini CLI: protocol injected into `~/.gemini/GEMINI.md`
-  - Qwen Code: protocol injected into `~/.qwen/QWEN.md`
-- 📦 **Zero‑Dependency Fallback**: Works without `memobank-cli` installed (reads/writes plain `MEMORY.md`).
-- 🛡️ **Secret Scanning**: `memo scan --fix` auto-redacts API keys, tokens, IPs before publishing to workspace.
-- 📥 **Memory Import**: Import from Claude Code, Gemini CLI, Qwen Code.
-- 🎯 **Interactive Setup**: TUI with `memo init`.
-
-## Quick Start (One-Liner)
+**One-liner install (skill + CLI):**
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/clawde-agent/memobank-skill/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/clawde-agent/memobank-skill/main/install.sh | bash -s -- --with-cli
 ```
 
-After installation:
+Then set up your project:
 
 ```bash
-memo init    # Interactive setup (project tier, recommended for teams)
+memo onboarding  # creates .memobank/ and configures your AI tool
 ```
 
-### 🤖 Ask Claude Code to Install
-
-Just give Claude Code this repo URL and say:
+**Or ask Claude Code to install it:**
 
 > "Install this skill for me: https://github.com/clawde-agent/memobank-skill"
 
-Claude Code will run:
-
-```bash
-bash install.sh --with-cli
-```
-
-Then start using:
+Claude Code will run `bash install.sh --with-cli`, then you can invoke it immediately:
 
 ```
 /memobank deploy the new feature
 /memobank debug the auth flow
 ```
+
+**For teams** — commit `.memobank/` like source code. Teammates get the same memories on clone:
+
+```bash
+git add .memobank/
+git commit -m "init team memory"
+```
+
+Claude Code loads the first 200 lines of `.memobank/MEMORY.md` at every session start — no plugins, no configuration beyond `memo onboarding`.
+
+---
+
+## How it works
+
+memobank uses three memory tiers — like `git config` levels, each with a different scope:
+
+| Tier | Location | Committed? | Scope |
+|------|----------|-----------|-------|
+| Personal | `~/.memobank/<project>/` | No | Your machine only |
+| Team | `.memobank/` in repo | Yes | Everyone who clones |
+| Workspace | `~/.memobank/_workspace/` | Separate remote | Across multiple repos |
+
+Most teams only ever need **Personal + Team**. Workspace is opt-in.
+
+When you run `memo recall`, memobank searches all active tiers and writes the top results to `.memobank/MEMORY.md`. The skill loads that file at the start of every session.
+
+Memories are plain markdown with a small YAML header — readable, diffable, and reviewable in PRs:
+
+```markdown
+---
+name: prefer-pnpm
+type: decision
+status: active
+tags: [tooling, packages]
+---
+We switched from npm to pnpm in March 2026. Faster installs, better monorepo support.
+```
+
+---
+
+## Why not just use CLAUDE.md?
+
+CLAUDE.md is great for static rules you write once. memobank handles knowledge that accumulates over time — lessons learned, decisions made, patterns discovered. The two are complementary: CLAUDE.md for "always do X", memobank for "we learned Y".
+
+## Why not a cloud memory API?
+
+Tools like mem0 or Zep store memories in external services. memobank stores them in your Git repo — no API keys, no vendor lock-in, no data leaving your machine. Memory health is visible in `git diff`. Reviews happen in PRs.
+
+## Why not Claude Code's built-in auto-memory?
+
+Claude Code's auto-memory is personal and machine-local by default. memobank adds the team layer: `.memobank/` is committed alongside your code, so every teammate and every CI run starts with the same shared knowledge. memobank also works with Cursor, Codex, Gemini CLI, and Qwen Code.
+
+---
+
+## Features
+
+**Memory management**
+- Four types: `lesson`, `decision`, `workflow`, `architecture`
+- Status lifecycle: `experimental → active → needs-review → deprecated`
+- Automatic stale memory detection via `memo review`
+
+**Search**
+- Default: keyword + tag + recency scoring, zero external dependencies
+- Optional: vector search via LanceDB (Ollama, OpenAI, Azure, Jina)
+
+**Safety**
+- Automatic secret redaction before every write (API keys, tokens, credentials)
+- `memo scan` blocks workspace publish if secrets are detected
+
+**Integrations**
+- Claude Code — full skill with hooks, `!` recall injection, Stop hook auto-capture
+- Cursor, Codex, Gemini CLI, Qwen Code — hooks installed via `memo onboarding`
+- Import from Claude Code, Gemini, and Qwen: `memo import --claude`
+
+**Team workflows**
+- Workspace tier: cross-repo knowledge synced via separate Git remote
+- Epoch-aware scoring: team knowledge naturally fades during handoffs
+- `memo map` for memory statistics, `memo lifecycle` for health scans
+
+---
 
 ## Manual Installation
 
@@ -110,6 +161,8 @@ bash install.sh --all
 # or
 memo install --platform all
 ```
+
+---
 
 ## Using memobank
 
@@ -171,6 +224,8 @@ memo lifecycle --scan     # run full scan, downgrade stale memories
 memo lifecycle --reset-epoch  # team handoff: new team starts fresh decay tracking
 ```
 
+---
+
 ## Directory Structure (v0.5.0+)
 
 ```
@@ -202,8 +257,10 @@ Workspace tier (org-wide, local clone of remote):
 └── architecture/
 
 Recall output (written on every memo recall):
-~/.memobank/<project-name>/memory/MEMORY.md
+<repo-root>/.memobank/MEMORY.md
 ```
+
+---
 
 ## Platform comparison
 
@@ -213,6 +270,8 @@ Recall output (written on every memo recall):
 | Auto capture at session end | ✅ Stop hook | Manual | Manual | ✅ GEMINI.md | ✅ QWEN.md |
 | `/memobank` skill invocation | ✅ | ❌ | ❌ | ❌ | ❌ |
 | `alwaysApply` rule | ❌ | ✅ AGENTS.md | ✅ .mdc | ✅ | ✅ |
+
+---
 
 ## References
 

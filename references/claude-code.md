@@ -7,12 +7,12 @@
    are injected as context. Zero MCP overhead.
 
 2. **Auto-capture** (`hooks.Stop`): when Claude finishes responding,
-   `memo capture --auto ` runs silently in the background.
+   `memo capture --auto` runs silently in the background.
    Any significant learnings are extracted and stored as structured memories.
 
-3. **Auto-memory integration**: `memo init` (or `memo install --platform claude-code`)
+3. **Auto-memory integration**: `memo onboarding` (or `memo install --platform claude-code`)
    sets `autoMemoryDirectory` in `~/.claude/settings.json` to point to your
-   memobank repo's `memory/` directory. Claude's native auto-memory writes go
+   project's `.memobank/` directory. Claude's native auto-memory writes go
    there, and `memo capture` picks them up.
 
 ## Installation
@@ -20,10 +20,10 @@
 ### Option A: Interactive (recommended)
 
 ```bash
-memo init
+memo onboarding
 ```
 
-4-step TUI: project name → platform selection (auto-detects Claude Code) → team repo → search engine.
+4-step TUI: project name → platform selection (auto-detects Claude Code) → workspace repo → search engine.
 
 ### Option B: Platform-only install
 
@@ -55,19 +55,19 @@ Add to `~/.claude/settings.json`:
 
 ```json
 {
-  "autoMemoryDirectory": "~/.memobank/<project>/memory/",
+  "autoMemoryDirectory": "/path/to/your-project/.memobank",
   "hooks": {
     "Stop": [
       {
         "matcher": "",
-        "hooks": [{ "type": "command", "command": "memo capture --auto " }]
+        "hooks": [{ "type": "command", "command": "memo capture --auto" }]
       }
     ]
   }
 }
 ```
 
-Replace `<project>` with your git repo name (e.g., `my-webapp`).
+Replace `/path/to/your-project/.memobank` with the absolute path to your project's `.memobank/` directory.
 
 ## Usage
 
@@ -83,37 +83,50 @@ Replace `<project>` with your git repo name (e.g., `my-webapp`).
 
 ```bash
 memo recall "auth flow" --scope personal   # personal memories only
-memo recall "auth flow" --scope team       # shared team memories only
+memo recall "auth flow" --scope project    # project (team) memories only
+memo recall "auth flow" --scope workspace  # org-wide workspace only
 memo recall "auth flow" --explain          # show score breakdown
 ```
 
-## Directory structure (v0.3.0+)
+## Directory structure (v0.5.0+)
 
-Memories are stored in a two-layer layout:
+Memories are stored across three tiers:
 
 ```
-~/.memobank/<project>/
-├── personal/          # Local only, never synced
-│   ├── lesson/
-│   ├── decision/
-│   ├── workflow/
-│   └── architecture/
-├── team/              # Git-tracked, synced to shared remote
-│   ├── lesson/
-│   └── ...
-├── memory/
-│   └── MEMORY.md      # Last recall result (injected via autoMemoryDirectory)
+Personal tier (private, never committed):
+~/.memobank/<project-name>/
+├── lesson/
+├── decision/
+├── workflow/
+├── architecture/
 └── meta/
     └── config.yaml
+
+Project tier (committed alongside code):
+<repo-root>/.memobank/           ← autoMemoryDirectory points here
+├── lesson/
+├── decision/
+├── workflow/
+├── architecture/
+├── MEMORY.md                    ← written by memo recall, read by Claude
+└── meta/
+    └── config.yaml
+
+Workspace tier (org-wide, local clone of remote):
+~/.memobank/_workspace/<workspace-name>/
+├── lesson/
+├── decision/
+├── workflow/
+└── architecture/
 ```
 
-## Team memory setup
+## Workspace memory setup
 
 ```bash
-memo team init git@github.com:your-org/team-memories.git
-memo team sync                # pull + push
-memo team publish <file>      # promote personal → team
-memo team status              # show git status
+memo workspace init git@github.com:your-org/platform-docs.git
+memo workspace sync                # pull + push
+memo workspace publish <file>      # promote project → workspace
+memo workspace status              # show git status
 ```
 
 ## Troubleshooting
@@ -137,7 +150,7 @@ Check `~/.claude/settings.json` has the Stop hook:
 ```json
 "hooks": {
   "Stop": [
-    { "matcher": "", "hooks": [{ "type": "command", "command": "memo capture --auto " }] }
+    { "matcher": "", "hooks": [{ "type": "command", "command": "memo capture --auto" }] }
   ]
 }
 ```

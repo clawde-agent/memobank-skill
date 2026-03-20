@@ -34,7 +34,7 @@ In Codex, memory retrieval is **manual** at session start:
 1. Open your project in Codex
 2. The agent reads AGENTS.md (including the memobank snippet)
 3. The snippet instructs the agent to recall memory: `memo recall "current task"`
-4. Or reads `~/.memobank/<project>/memory/MEMORY.md` directly if CLI is not installed
+4. Or reads `.memobank/MEMORY.md` directly if CLI is not installed
 
 ## Writing memories
 
@@ -52,12 +52,12 @@ There's no automatic capture hook in Codex. Manually run at session end:
 memo capture --auto 
 ```
 
-## Team memory (v0.3.0+)
+## Workspace memory
 
 ```bash
-memo team init <remote-url>    # Link shared team repo
-memo team sync                 # Pull + push
-memo team publish <file>       # Promote personal → team
+memo workspace init <remote-url>    # Link org-wide workspace repo
+memo workspace sync                 # Pull + push
+memo workspace publish <file>       # Promote project → workspace
 ```
 
 ## Searching memory
@@ -71,7 +71,7 @@ memo search "query" --tag=redis          # Filter by tag
 
 ## Without memobank-cli
 
-1. **Read MEMORY.md** — `~/.memobank/<project>/memory/MEMORY.md` at session start
+1. **Read MEMORY.md** — `.memobank/MEMORY.md` at session start
 2. **Write manually** — append entries directly to MEMORY.md
 3. **No auto-capture** — extract learnings manually
 

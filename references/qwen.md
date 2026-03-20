@@ -46,12 +46,12 @@ memo capture --auto
 memo write <type> --name="..." --description="..." --tags="..." --content="..."
 ```
 
-## Team memory (v0.3.0+)
+## Workspace memory
 
 ```bash
-memo team init <remote-url>
-memo team sync
-memo team publish <file>
+memo workspace init <remote-url>
+memo workspace sync
+memo workspace publish <file>
 ```
 
 ## Detection
