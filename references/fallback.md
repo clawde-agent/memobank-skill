@@ -64,7 +64,7 @@ cd /path/to/your/project
 memo onboarding    # Interactive setup
 ```
 
-## Directory structure (v0.5.0+)
+## Directory structure (v0.6.0+)
 
 ```
 Personal tier (private, never committed):

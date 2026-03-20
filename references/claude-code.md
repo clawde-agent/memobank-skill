@@ -88,7 +88,7 @@ memo recall "auth flow" --scope workspace  # org-wide workspace only
 memo recall "auth flow" --explain          # show score breakdown
 ```
 
-## Directory structure (v0.5.0+)
+## Directory structure (v0.6.0+)
 
 Memories are stored across three tiers:
 

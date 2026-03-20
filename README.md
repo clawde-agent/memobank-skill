@@ -227,7 +227,7 @@ memo lifecycle --reset-epoch  # team handoff: new team starts fresh decay tracki
 
 ---
 
-## Directory Structure (v0.5.0+)
+## Directory Structure (v0.6.0+)
 
 ```
 Personal tier (private, never committed):
