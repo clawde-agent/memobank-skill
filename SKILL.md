@@ -90,7 +90,7 @@ Memobank uses three tiers with distinct scopes. Choose the right tier for each m
 | Tier | Location | Who sees it | When to use |
 |------|----------|-------------|-------------|
 | **Personal** | `~/.memobank/<project>/` | Only you | Private notes, machine-specific quirks, experiments |
-| **Project** | `<repo-root>/.memobank/` | Everyone who clones repo | Team lessons, ADRs, shared runbooks |
+| **Project** | `<repo-root>/<dir>/` (default: `.memobank/`) | Everyone who clones repo | Team lessons, ADRs, shared runbooks |
 | **Workspace** | `~/.memobank/_workspace/<name>/` | Entire org (via remote repo) | Cross-repo contracts, platform patterns, org-wide decisions |
 
 **Priority on recall:** Project > Personal > Workspace. Duplicate filenames: higher-priority tier wins.

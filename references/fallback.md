@@ -77,7 +77,7 @@ Personal tier (private, never committed):
     └── config.yaml
 
 Project tier (committed alongside code):
-<repo-root>/.memobank/
+<repo-root>/<dir>/               (default: .memobank/)
 ├── lesson/
 ├── decision/
 ├── workflow/

@@ -23,7 +23,7 @@
 memo onboarding
 ```
 
-4-step TUI: project name → platform selection (auto-detects Claude Code) → workspace repo → search engine.
+Interactive TUI: project name → **memory directory name** (default `.memobank`, or type a custom folder name) → platform selection → workspace repo → search engine.
 
 ### Option B: Platform-only install
 
@@ -67,7 +67,7 @@ Add to `~/.claude/settings.json`:
 }
 ```
 
-Replace `/path/to/your-project/.memobank` with the absolute path to your project's `.memobank/` directory.
+Replace `/path/to/your-project/.memobank` with the absolute path to your project memory directory (whatever name you chose during `memo onboarding` — default is `.memobank`).
 
 ## Usage
 
@@ -103,7 +103,7 @@ Personal tier (private, never committed):
     └── config.yaml
 
 Project tier (committed alongside code):
-<repo-root>/.memobank/           ← autoMemoryDirectory points here
+<repo-root>/<dir>/               ← autoMemoryDirectory points here (default: .memobank/)
 ├── lesson/
 ├── decision/
 ├── workflow/
