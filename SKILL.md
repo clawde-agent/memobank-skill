@@ -60,52 +60,88 @@ Types: `lesson` | `decision` | `workflow` | `architecture`
 For new users, run the interactive setup:
 
 ```bash
-memo init    # 4-step interactive TUI (recommended)
+memo init    # interactive TUI (recommended)
 ```
 
-This guides you through: project name → platform selection → team repo (optional) → search engine → embedding provider (if lancedb) → reranker (optional).
+This guides you through: project name → tier selection (personal/project) → search engine → workspace remote (optional).
+
+**Tier selection:**
+- `memo init` — project tier, memories committed alongside code (default for teams)
+- `memo init --global` — personal tier only, private to this machine, never committed
 
 ## Searching Memory
 
 ```bash
-memo recall "query"                      # search + write to MEMORY.md (primary)
-memo recall "query" --scope personal     # personal memories only
-memo recall "query" --scope team         # team memories only
-memo recall "query" --explain            # show score breakdown (keyword/tags/recency)
-memo search "query"                      # debug search, does not update MEMORY.md
-memo search "query" --engine=lancedb     # vector search (if configured)
-memo search "query" --tag=redis          # filter by tag
-memo search "query" --type=decision      # filter by type
+memo recall "query"                        # search all tiers (primary)
+memo recall "query" --scope personal       # personal memories only
+memo recall "query" --scope project        # project (team) memories only
+memo recall "query" --scope workspace      # org-wide workspace only
+memo recall "query" --explain              # show score breakdown (keyword/tags/recency)
+memo search "query"                        # debug search, does not update MEMORY.md
+memo search "query" --engine=lancedb       # vector search (if configured)
+memo search "query" --tag=redis            # filter by tag
+memo search "query" --type=decision        # filter by type
 ```
 
-## Team Memory
+## Three-Tier Memory
+
+Memobank uses three tiers with distinct scopes. Choose the right tier for each memory:
+
+| Tier | Location | Who sees it | When to use |
+|------|----------|-------------|-------------|
+| **Personal** | `~/.memobank/<project>/` | Only you | Private notes, machine-specific quirks, experiments |
+| **Project** | `<repo-root>/.memobank/` | Everyone who clones repo | Team lessons, ADRs, shared runbooks |
+| **Workspace** | `~/.memobank/_workspace/<name>/` | Entire org (via remote repo) | Cross-repo contracts, platform patterns, org-wide decisions |
+
+**Priority on recall:** Project > Personal > Workspace. Duplicate filenames: higher-priority tier wins.
+
+## Workspace Memory (Org-Wide)
 
 ```bash
-memo team init <remote-url>   # Link shared team memory repo
-memo team sync                # Pull + push team memories
-memo team publish <file>      # Promote a personal memory to team
-memo team status              # Show team repo status
+memo workspace init <remote-url>    # Connect to org workspace repo
+memo workspace sync                 # Pull latest org memories
+memo workspace sync --push          # Push changes to org remote
+memo workspace publish <file>       # Promote a project memory to org workspace (+ secret scan)
+memo workspace status               # Show git status of workspace clone
+```
+
+**Workspace** is optional. If not configured, recall silently skips that tier.
+
+## Migration from Old Layout
+
+If you have the old `personal/` + `team/` directory structure:
+
+```bash
+memo migrate --dry-run    # preview what would move
+memo migrate              # execute migration
+memo migrate --rollback   # restore previous layout if needed
 ```
 
 ## Secret Scanning
 
 ```bash
-memo scan                     # Scan team/ for secrets before pushing
+memo scan                     # Scan .memobank/ for secrets
 memo scan --fix               # Auto-redact and re-stage
 ```
 
+`memo workspace publish` automatically runs the scanner and blocks if secrets are found.
+
 ## Memory Lifecycle
 
-Frequently accessed memories get a recall boost (log-based, up to 1.5×). Tiers:
-- **core** — recalled ≥10 times, priority retrieval
-- **working** — active memories
-- **peripheral** — no access in 90+ days, archive candidates
+Each memory has a `status` field that evolves based on recall frequency:
+
+| Status | Meaning |
+|--------|---------|
+| `experimental` | Newly written, unverified |
+| `active` | Recalled at least once; trusted |
+| `needs-review` | Not recalled in 90 days; may be stale |
+| `deprecated` | Excluded from default recall; still searchable |
 
 ```bash
-memo lifecycle report         # View memory statistics and tiers
-memo lifecycle --tier core    # Show frequently accessed memories
-memo lifecycle flagged        # Show memories needing review
-memo correct <path>           # Record a correction
+memo lifecycle                # View lifecycle report
+memo lifecycle --scan         # Run full scan, downgrade stale memories (run in CI)
+memo lifecycle --reset-epoch  # Reset epoch for team handoff (new team, fresh decay tracking)
+memo correct <path>           # Record a correction to a memory
 ```
 
 ## Checking Review Reminders
