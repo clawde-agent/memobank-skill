@@ -293,7 +293,7 @@ Run `memo capture --auto` at end of session if memobank-cli is installed.
 
 ## 7. Degradation Modes
 
-| Scenario | Behavior |
+| Scenario | Behaviour |
 |---|---|
 | `memo` installed, Mode A repo | Full: vector/hybrid recall, structured capture, git-tracked |
 | `memo` installed, Mode B | Full: CLI recall writes MEMORY.md, auto-capture via hook |

@@ -2,7 +2,7 @@
 
 ## How it works
 
-Cursor uses `.cursor/rules/*.mdc` files to enforce agent behavior. The memobank rule file (`memobank.mdc`) ensures the memory protocol is loaded every session via `alwaysApply: true`.
+Cursor uses `.cursor/rules/*.mdc` files to enforce agent behaviour. The memobank rule file (`memobank.mdc`) ensures the memory protocol is loaded every session via `alwaysApply: true`.
 
 ## Installation
 
