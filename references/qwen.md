@@ -9,7 +9,7 @@ Qwen Code reads `~/.qwen/QWEN.md` as its system prompt file. The memobank adapte
 ### Option A: Interactive (recommended)
 
 ```bash
-memo init
+memo onboarding    # alias: memo init
 ```
 
 Select "Qwen Code" in the platform multi-select step (auto-detected if `~/.qwen/` exists or `qwen` is in PATH).

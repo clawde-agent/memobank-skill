@@ -9,7 +9,7 @@ Cursor uses `.cursor/rules/*.mdc` files to enforce agent behaviour. The memobank
 ### Option A: Interactive (recommended)
 
 ```bash
-memo init
+memo onboarding    # alias: memo init
 ```
 
 Select "Cursor" in the platform multi-select step.

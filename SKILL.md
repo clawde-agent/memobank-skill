@@ -60,14 +60,14 @@ Types: `lesson` | `decision` | `workflow` | `architecture`
 For new users, run the interactive setup:
 
 ```bash
-memo init    # interactive TUI (recommended)
+memo onboarding    # interactive TUI (recommended); alias: memo init
 ```
 
-This guides you through: project name → tier selection (personal/project) → search engine → workspace remote (optional).
+This guides you through: project name → memory directory name → platform selection → workspace remote → search engine.
 
 **Tier selection:**
-- `memo init` — project tier, memories committed alongside code (default for teams)
-- `memo init --global` — personal tier only, private to this machine, never committed
+- `memo onboarding` (`memo init`) — project tier, memories committed alongside code (default for teams)
+- `memo onboarding --global` (`memo init --global`) — personal tier only, private to this machine, never committed
 
 ## Searching Memory
 
@@ -132,9 +132,9 @@ Each memory has a `status` field that evolves based on recall frequency:
 
 | Status | Meaning |
 |--------|---------|
-| `experimental` | Newly written, unverified |
-| `active` | Recalled at least once; trusted |
-| `needs-review` | Not recalled in 90 days; may be stale |
+| `experimental` | Newly written, unverified; deprecated after 30 days if never recalled |
+| `active` | Recalled at least once; trusted; downgraded after 90 days without recall |
+| `needs-review` | Not recalled in 90 days; may be stale; re-activated by ≥ 3 recalls |
 | `deprecated` | Excluded from default recall; still searchable |
 
 ```bash

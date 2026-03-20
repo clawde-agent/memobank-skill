@@ -9,7 +9,7 @@ Codex reads memory from **AGENTS.md** at session start. The skill provides a rea
 ### Option A: Interactive (recommended)
 
 ```bash
-memo init
+memo onboarding    # alias: memo init
 ```
 
 Select "Codex" in the platform multi-select step.

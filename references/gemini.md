@@ -9,7 +9,7 @@ Gemini CLI reads `~/.gemini/GEMINI.md` as its system prompt file. The memobank a
 ### Option A: Interactive (recommended)
 
 ```bash
-memo init
+memo onboarding    # alias: memo init
 ```
 
 Select "Gemini CLI" in the platform multi-select step (auto-detected if `~/.gemini/` exists or `gemini` is in PATH).

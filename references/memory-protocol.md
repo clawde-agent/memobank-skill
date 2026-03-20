@@ -84,9 +84,37 @@ memo write architecture \
 
 ---
 
+## Memory Lifecycle & Status
+
+Each memory carries a `status` field that evolves automatically based on recall frequency and time:
+
+| Status | Meaning |
+|--------|---------|
+| `experimental` | Newly written, unverified — deprecated automatically after 30 days if never recalled |
+| `active` | Trusted; recalled at least once — downgraded to `needs-review` after 90 days without recall |
+| `needs-review` | May be stale — downgraded to `deprecated` after a further 90 days without recall |
+| `deprecated` | Excluded from default recall; still searchable |
+
+**Status transition rules:**
+
+- `experimental → active`: recalled at least once (any single recall suffices)
+- `active → needs-review`: not recalled for ≥ 90 days (`active_to_review_days`)
+- `needs-review → active`: recalled ≥ 3 times (deliberate re-validation; `review_recall_threshold: 3`)
+- `needs-review → deprecated`: not recalled for ≥ 90 days after entering `needs-review` (`review_to_deprecated_days`)
+- `experimental → deprecated`: not recalled within 30 days of creation (`experimental_ttl_days`)
+- `deprecated → needs-review`: recalled at least once (recovery path)
+
+Run the periodic scan to apply downgrade rules (safe to run in CI):
+
+```bash
+memo lifecycle --scan
+```
+
+---
+
 ## Workspace Memory (Org-Wide)
 
-Share memories across the organization via a shared Git remote:
+Share memories across the organisation via a shared Git remote:
 
 ```bash
 memo workspace init git@github.com:your-org/platform-docs.git
@@ -96,26 +124,38 @@ memo workspace sync    # pull + push
 
 Recall results label sources: `[workspace]` / `[project]` / `[personal]`.
 
+The workspace config written to `meta/config.yaml`:
+
+```yaml
+workspace:
+  remote: git@github.com:your-org/platform-docs.git
+  auto_sync: false
+  branch: main          # default branch to sync against
+  path: .memobank       # optional — subdirectory within the remote repo
+```
+
 ---
 
 ## Search & Recall Quality
 
 **Recall scoring** combines keyword match, tag overlap, recency decay, and access frequency boost. Frequently recalled memories get up to 1.5× score multiplier.
 
-**Embedding (vector search)** — configure via `memo init` → lancedb engine:
-- **Ollama** — local, no API key needed (model: `mxbai-embed-large`)
-- **OpenAI** — set `OPENAI_API_KEY` (model: `text-embedding-3-small`)
-- **Jina AI** — set `JINA_API_KEY` (model: `jina-embeddings-v3`)
+**Embedding (vector search)** — configure via `memo onboarding` (alias: `memo init`) → lancedb engine:
+- **Ollama** — local, no API key needed (model: `mxbai-embed-large`, 1024 dimensions)
+- **OpenAI** — set `OPENAI_API_KEY` (model: `text-embedding-3-small`, 1536 dimensions)
+- **Azure** — set `AZURE_API_KEY` (model: `text-embedding-ada-002`, 1536 dimensions)
+- **Jina AI** — set `JINA_API_KEY` (model: `jina-embeddings-v3`, 1024 dimensions)
 
 **Reranker** — optional second-pass AI reranking for better precision:
 - **Jina AI** — set `JINA_API_KEY` (model: `jina-reranker-v2-base-multilingual`)
 - **Cohere** — set `COHERE_API_KEY` (model: `rerank-v3.5`)
 
-Enable during `memo init`, or manually in `meta/config.yaml`:
+Enable during `memo onboarding` (alias: `memo init`), or manually in `meta/config.yaml`:
 ```yaml
 reranker:
   enabled: true
   provider: jina   # or cohere
+  top_n: 5         # optional — number of results to return after reranking
 ```
 
 ---
