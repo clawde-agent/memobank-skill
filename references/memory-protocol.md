@@ -194,6 +194,13 @@ memo recall "query" --scope workspace    # Org-wide only
 memo recall "query" --explain            # Show score breakdown
 ```
 
+### Capture & Queue
+```bash
+memo capture --auto                      # Extract from Claude auto-memory files → pending queue
+memo process-queue                       # Drain pending queue: dedup + write to memory files
+memo process-queue --background          # Same, detached background process (used by Stop hook)
+```
+
 ### Write
 ```bash
 memo write <type> --name="..." --description="..." --tags="..." --content="..."

@@ -8,7 +8,8 @@
 
 2. **Auto-capture** (`hooks.Stop`): when Claude finishes responding,
    `memo capture --auto` runs silently in the background.
-   Any significant learnings are extracted and stored as structured memories.
+   Extracted learnings are written to a `.pending/` queue; `memo process-queue`
+   then deduplicates and writes them to memory files.
 
 3. **Auto-memory integration**: `memo onboarding` (or `memo install --platform claude-code`)
    sets `autoMemoryDirectory` in `~/.claude/settings.json` to point to your
@@ -58,10 +59,8 @@ Add to `~/.claude/settings.json`:
   "autoMemoryDirectory": "/path/to/your-project/.memobank",
   "hooks": {
     "Stop": [
-      {
-        "matcher": "",
-        "hooks": [{ "type": "command", "command": "memo capture --auto" }]
-      }
+      { "command": "memo capture --auto" },
+      { "command": "memo process-queue --background" }
     ]
   }
 }
@@ -146,11 +145,12 @@ If memo is not installed: `npm install -g memobank-cli`
 
 ### Auto-capture not working
 
-Check `~/.claude/settings.json` has the Stop hook:
+Check `~/.claude/settings.json` has the Stop hooks (run `memo install --platform claude-code` to add them automatically):
 ```json
 "hooks": {
   "Stop": [
-    { "matcher": "", "hooks": [{ "type": "command", "command": "memo capture --auto" }] }
+    { "command": "memo capture --auto" },
+    { "command": "memo process-queue --background" }
   ]
 }
 ```
