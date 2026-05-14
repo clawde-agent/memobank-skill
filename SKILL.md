@@ -36,7 +36,7 @@ You have access to a structured project memory system. Use it to avoid repeating
 
 ## Memory Context
 
-!`memo recall "$ARGUMENTS" --code 2>/dev/null || cat $(git rev-parse --show-toplevel 2>/dev/null)/.memobank/MEMORY.md 2>/dev/null || echo "(no memory configured — run: memo init)"`
+!`~/.claude/skills/memobank/scripts/recall-context.sh "$ARGUMENTS"`
 
 ## Memory Protocol
 
