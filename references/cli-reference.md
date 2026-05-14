@@ -1,0 +1,183 @@
+# memobank CLI Reference
+
+Complete command reference for `memo` CLI. For the memory workflow, see `memory-protocol.md`.
+
+---
+
+## Setup & Installation
+
+```bash
+# First-time setup
+memo init                                    # auto-detect project name + platforms
+memo init --interactive                      # full 13-step TUI wizard
+memo init --platform claude-code,cursor      # install specific platforms (comma-separated)
+memo onboarding                              # interactive wizard (alias: memo setup)
+
+# Lower-level directory setup
+memo install                                 # set up .memobank/ directory structure
+memo install --platform <name>               # with platform adapter
+memo install --repo <path>                   # point to existing memobank repo
+
+# Tier initialization (non-interactive, for scripting)
+memo tier-init                               # project tier (default)
+memo tier-init --global                      # personal tier in ~/.memobank/<project>/
+memo tier-init --name <name>                 # specify project name
+```
+
+---
+
+## Recall & Search
+
+```bash
+memo recall "query"                          # search all tiers (writes to MEMORY.md)
+memo recall "query" --top <number>           # number of results (default: 5)
+memo recall "query" --code                   # dual-track: memories + code symbols (v0.8.0+)
+memo recall --refs <symbol>                  # call-graph: callers of a function (v0.8.0+)
+memo recall "query" --scope personal         # personal tier only
+memo recall "query" --scope project          # project tier only
+memo recall "query" --scope workspace        # workspace tier only
+memo recall "query" --explain                # show score breakdown (keyword/tags/recency)
+memo recall "query" --dry-run               # print without writing MEMORY.md
+
+memo search "query"                          # debug search — does NOT update MEMORY.md
+memo search "query" --engine lancedb         # vector search (if configured)
+memo search "query" --tag <tag>              # filter by tag
+memo search "query" --type <type>            # filter by type
+```
+
+---
+
+## Writing Memories
+
+```bash
+memo write <type> --name="..." --description="..." --tags="..." --content="..."
+memo write <type> --symbol <symbol>          # anchor memory to a code symbol
+```
+
+Types: `lesson` | `decision` | `workflow` | `architecture`
+
+---
+
+## Study & Promote
+
+```bash
+memo study [lesson-name]                     # promote lesson to CLAUDE.md conditional block
+memo study --list                            # list available lessons
+memo study --if <condition>                  # specify condition (skips interactive prompt)
+```
+
+---
+
+## Map & Stats
+
+```bash
+memo map                                     # show memory summary and statistics
+memo map --type <type>                       # filter by type
+```
+
+---
+
+## Code Indexing (v0.8.0+)
+
+```bash
+memo index-code [path]                       # index codebase symbols for recall --code
+memo index-code --summarize                  # write architecture memory after indexing
+memo index-code --langs ts,go                # limit to specific languages
+memo index-code --force                      # re-index all files (ignore hash cache)
+```
+
+---
+
+## Search Index (keyword/vector)
+
+```bash
+memo index                                   # build or update search index
+memo index --incremental                     # only index changed files
+memo index --force                           # force full rebuild
+memo index --engine lancedb                  # use vector engine
+```
+
+---
+
+## Lifecycle Management
+
+```bash
+memo lifecycle                               # view lifecycle report
+memo lifecycle --scan                        # run full scan, downgrade stale memories (CI)
+memo lifecycle --reset-epoch                 # reset epoch for team handoff
+memo lifecycle --tier <tier>                 # filter by tier (core|working|peripheral)
+memo lifecycle --archive                     # show archival candidates
+memo lifecycle --flagged                     # show memories flagged for review
+
+memo correct <path>                          # record a correction for a memory
+memo correct <path> --reason <text>          # with reason
+
+memo review --due                            # show memories overdue for re-evaluation
+```
+
+**Lifecycle states:** `experimental` → `active` → `needs-review` → `deprecated`
+
+| Status | Meaning |
+|--------|---------|
+| `experimental` | Newly written; deprecated after 30 days if never recalled |
+| `active` | Recalled at least once; trusted |
+| `needs-review` | Not recalled in 90 days; re-activated by ≥ 3 recalls |
+| `deprecated` | Excluded from default recall; still searchable |
+
+---
+
+## Workspace Memory (Org-Wide)
+
+```bash
+memo workspace init <remote-url>             # connect to shared workspace repo
+memo workspace sync                          # pull latest org memories
+memo workspace sync --push                   # pull then push local changes
+memo workspace publish <file>                # promote memory to workspace (runs secret scan)
+memo workspace status                        # show git status of workspace clone
+```
+
+**Workspace** is optional. If not configured, recall silently skips that tier.
+
+---
+
+## Secret Scanning
+
+```bash
+memo scan                                    # scan .memobank/ for secrets
+memo scan --fix                              # auto-redact and re-stage
+memo scan --staged                           # scan git-staged files only (pre-commit hook)
+memo scan --fail-on-secrets                  # exit with code 1 if secrets found
+```
+
+---
+
+## Import from Other AI Tools
+
+```bash
+memo import --claude                         # import from Claude Code
+memo import --gemini                         # import from Gemini CLI
+memo import --qwen                           # import from Qwen Code
+memo import --all                            # import from all available tools (default)
+memo import --dry-run                        # preview without writing
+```
+
+---
+
+## Migration from Old Layout
+
+```bash
+memo migrate --dry-run                       # preview changes
+memo migrate                                 # execute migration
+memo migrate --rollback                      # restore previous layout
+```
+
+---
+
+## Capture & Queue
+
+```bash
+memo capture --auto                          # extract learnings from Claude auto-memory dir
+memo capture --silent                        # suppress output (for hooks)
+memo process-queue                           # process pending memory queue
+memo process-queue --background              # spawn as background process
+```

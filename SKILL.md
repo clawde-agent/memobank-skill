@@ -15,17 +15,13 @@ allowed-tools: Bash(memo *)
 
 # memobank — Project Memory
 
-## 🚀 Quick Install (One Command)
-
-If this skill is not installed yet, run:
+## Quick Install
 
 ```bash
 bash install.sh --with-cli
 ```
 
-This installs both the skill (for Claude Code/Codex/Cursor/Gemini/Qwen) AND the CLI tool (memobank-cli).
-
-Or for remote install:
+Or remote:
 ```bash
 curl -fsSL https://github.com/clawde-agent/memobank-skill/raw/main/install.sh | bash -s -- --with-cli
 ```
@@ -49,128 +45,48 @@ The memory context above was retrieved before you read this. Use it.
 - Discover a workflow or pattern worth reusing
 - Learn something that would have saved time if known earlier
 
-Run: `memo write <type> --name="..." --description="..." --tags="..." --content="..."`
+```bash
+memo write <type> --name="..." --description="..." --tags="..." --content="..."
+```
 
 Types: `lesson` | `decision` | `workflow` | `architecture`
 
+Optional: `--symbol <symbol>` to anchor the memory to a specific code symbol.
+
 **You do NOT need to call `memo capture` at the end** — the Stop hook does it automatically.
 
-## First-Time Setup
-
-For new users, initialize in seconds:
+## Common Commands
 
 ```bash
-memo init                          # auto-detect project name + installed platforms
-memo init --interactive            # full 13-step setup wizard (embedding, reranker, etc.)
-memo init --platform claude-code   # install specific platform only
-```
-
-**Tier selection:**
-- `memo init` — project tier, memories committed alongside code (default for teams)
-- `memo init --global` — personal tier only, private to this machine, never committed
-
-## Code Indexing (v0.8.0+)
-
-Index your codebase with tree-sitter to enable code-aware recall:
-
-```bash
-memo index-code [path]           # parse codebase and store symbols in .memobank/meta/code-index.db
-memo index-code --summarize      # write architecture memory after indexing
-memo index-code --langs ts,go    # limit scan to specific languages
-```
-
-## Searching Memory & Code
-
-```bash
-memo recall "query"                        # search all tiers (primary)
-memo recall "query" --code                 # dual-track: search memories + code symbols (v0.8.0)
-memo recall --refs <symbol>                # call-graph: find all callers of a function (v0.8.0)
-memo recall "query" --scope personal       # personal memories only
-memo recall "query" --scope project        # project (team) memories only
-memo recall "query" --scope workspace      # org-wide workspace only
-memo recall "query" --explain              # show score breakdown (keyword/tags/recency)
-memo search "query"                        # debug search, does not update MEMORY.md
-memo search "query" --engine=lancedb       # vector search (if configured)
+memo recall "query"           # search memory (primary — also updates MEMORY.md)
+memo recall "query" --code    # dual-track: memories + code symbols (v0.8.0+)
+memo search "query"           # debug search — does NOT update MEMORY.md
+memo map                      # show memory statistics
+memo study [lesson-name]      # promote lesson to CLAUDE.md conditional block
 ```
 
 ## Three-Tier Memory
 
-Memobank uses three tiers with distinct scopes. Choose the right tier for each memory:
-
 | Tier | Location | Who sees it | When to use |
 |------|----------|-------------|-------------|
-| **Personal** | `~/.memobank/<project>/` | Only you | Private notes, machine-specific quirks, experiments |
-| **Project** | `<repo-root>/<dir>/` (default: `.memobank/`) | Everyone who clones repo | Team lessons, ADRs, shared runbooks |
-| **Workspace** | `~/.memobank/_workspace/<name>/` | Entire org (via remote repo) | Cross-repo contracts, platform patterns, org-wide decisions |
+| **Personal** | `~/.memobank/<project>/` | Only you | Private notes, machine-specific quirks |
+| **Project** | `<repo-root>/.memobank/` | Everyone who clones repo | Team lessons, ADRs, runbooks |
+| **Workspace** | `~/.memobank/_workspace/<name>/` | Entire org | Cross-repo contracts, org-wide decisions |
 
-**Priority on recall:** Project > Personal > Workspace. Duplicate filenames: higher-priority tier wins.
+**Priority on recall:** Project > Personal > Workspace.
 
-## Workspace Memory (Org-Wide)
-
-```bash
-memo workspace init <remote-url>    # Connect to org workspace repo
-memo workspace sync                 # Pull latest org memories
-memo workspace sync --push          # Push changes to org remote
-memo workspace publish <file>       # Promote a project memory to org workspace (+ secret scan)
-memo workspace status               # Show git status of workspace clone
-```
-
-**Workspace** is optional. If not configured, recall silently skips that tier.
-
-## Migration from Old Layout
-
-If you have the old `personal/` + `team/` directory structure:
+## First-Time Setup
 
 ```bash
-memo migrate --dry-run    # preview what would move
-memo migrate              # execute migration
-memo migrate --rollback   # restore previous layout if needed
+memo init              # auto-detect project name + platforms (recommended)
+memo onboarding        # interactive 13-step wizard (alias: memo setup)
 ```
 
-## Secret Scanning
+For personal-only (never committed): `memo tier-init --global`
 
-```bash
-memo scan                     # Scan .memobank/ for secrets
-memo scan --fix               # Auto-redact and re-stage
-```
+## References
 
-`memo workspace publish` automatically runs the scanner and blocks if secrets are found.
-
-## Memory Lifecycle
-
-Each memory has a `status` field that evolves based on recall frequency:
-
-| Status | Meaning |
-|--------|---------|
-| `experimental` | Newly written, unverified; deprecated after 30 days if never recalled |
-| `active` | Recalled at least once; trusted; downgraded after 90 days without recall |
-| `needs-review` | Not recalled in 90 days; may be stale; re-activated by ≥ 3 recalls |
-| `deprecated` | Excluded from default recall; still searchable |
-
-```bash
-memo lifecycle                # View lifecycle report
-memo lifecycle --scan         # Run full scan, downgrade stale memories (run in CI)
-memo lifecycle --reset-epoch  # Reset epoch for team handoff (new team, fresh decay tracking)
-memo correct <path>           # Record a correction to a memory
-```
-
-## Checking Review Reminders
-
-```bash
-memo review --due    # show memories flagged for re-evaluation
-```
-
-## Import from Other AI Tools
-
-```bash
-memo import --claude    # Import from Claude Code
-memo import --gemini    # Import from Gemini CLI
-memo import --qwen      # Import from Qwen Code
-memo import --all       # Import from all available tools
-```
-
-## For Setup Reference
-
-See [references/claude-code.md](references/claude-code.md) for full configuration.
-See [references/memory-protocol.md](references/memory-protocol.md) for the complete memory protocol.
-See [references/fallback.md](references/fallback.md) for operation without memobank-cli.
+- [CLI Reference](references/cli-reference.md) — full command and flag documentation
+- [Memory Protocol](references/memory-protocol.md) — detailed when/how to write memories
+- [Platform Setup](references/claude-code.md) — Claude Code-specific configuration
+- [Fallback Guide](references/fallback.md) — operation without memobank-cli

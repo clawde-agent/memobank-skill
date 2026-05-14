@@ -134,6 +134,42 @@ At the start of each session, recall: \`memo recall \"<current task>\"\`"
   echo -e "${GREEN}✓${NC} Memory protocol appended to ~/.qwen/QWEN.md"
 }
 
+# Install for OpenCode
+install_opencode() {
+  echo "→ Configuring OpenCode..."
+
+  local opencode_json="${OPENCODE_JSON:-opencode.json}"
+
+  if [[ ! -f "$opencode_json" ]]; then
+    echo -e "${YELLOW}⚠${NC} No opencode.json found in current directory."
+    echo "   Create one with: echo '{\"plugin\":[]}' > opencode.json"
+    echo "   Then re-run: bash install.sh --opencode"
+    echo ""
+    echo "   Or follow the manual instructions in .opencode/INSTALL.md"
+    return
+  fi
+
+  if grep -q "memobank" "$opencode_json" 2>/dev/null; then
+    echo -e "${GREEN}✓${NC} memobank already in opencode.json"
+    return
+  fi
+
+  # Use python/node to safely inject into JSON, fall back to instructions
+  if command -v node &>/dev/null; then
+    node -e "
+      const fs = require('fs');
+      const cfg = JSON.parse(fs.readFileSync('$opencode_json', 'utf8'));
+      cfg.plugin = cfg.plugin || [];
+      cfg.plugin.push('memobank@git+https://github.com/clawde-agent/memobank-skill.git');
+      fs.writeFileSync('$opencode_json', JSON.stringify(cfg, null, 2) + '\n');
+    "
+    echo -e "${GREEN}✓${NC} memobank added to opencode.json"
+  else
+    echo -e "${YELLOW}⚠${NC} node not found. Add manually to opencode.json:"
+    echo '   "plugin": ["memobank@git+https://github.com/clawde-agent/memobank-skill.git"]'
+  fi
+}
+
 # Install for Cursor
 install_cursor() {
   echo "→ Configuring Cursor..."
@@ -209,7 +245,7 @@ INSTALL_CLI=false
 
 if [[ $# -eq 0 ]]; then
   # Default: install all
-  PLATFORMS=("claude-code" "codex" "cursor" "gemini" "qwen")
+  PLATFORMS=("claude-code" "codex" "cursor" "gemini" "qwen" "opencode")
 else
   for arg in "$@"; do
     case "$arg" in
@@ -218,11 +254,12 @@ else
       --cursor|cursor)           PLATFORMS+=("cursor") ;;
       --gemini|gemini)           PLATFORMS+=("gemini") ;;
       --qwen|qwen)               PLATFORMS+=("qwen") ;;
-      --all|all)                 PLATFORMS=("claude-code" "codex" "cursor" "gemini" "qwen") ;;
+      --opencode|opencode)       PLATFORMS+=("opencode") ;;
+      --all|all)                 PLATFORMS=("claude-code" "codex" "cursor" "gemini" "qwen" "opencode") ;;
       --with-cli|cli)            INSTALL_CLI=true ;;
       *)
         echo "Unknown option: $arg"
-        echo "Usage: bash install.sh [--claude-code] [--codex] [--cursor] [--gemini] [--qwen] [--all] [--with-cli]"
+        echo "Usage: bash install.sh [--claude-code] [--codex] [--cursor] [--gemini] [--qwen] [--opencode] [--all] [--with-cli]"
         exit 1
         ;;
     esac
@@ -237,6 +274,7 @@ for platform in "${PLATFORMS[@]}"; do
     cursor)      install_cursor ;;
     gemini)      install_gemini ;;
     qwen)        install_qwen ;;
+    opencode)    install_opencode ;;
   esac
 done
 
