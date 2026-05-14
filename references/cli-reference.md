@@ -32,7 +32,7 @@ memo tier-init --name <name>                 # specify project name
 memo recall "query"                          # search all tiers (writes to MEMORY.md)
 memo recall "query" --top <number>           # number of results (default: 5)
 memo recall "query" --code                   # dual-track: memories + code symbols (v0.8.0+)
-memo recall --refs <symbol>                  # call-graph: callers of a function (v0.8.0+)
+memo recall "query" --refs <symbol>          # call-graph: callers of a function (v0.8.0+)
 memo recall "query" --scope personal         # personal tier only
 memo recall "query" --scope project          # project tier only
 memo recall "query" --scope workspace        # workspace tier only
