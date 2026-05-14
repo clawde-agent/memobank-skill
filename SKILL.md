@@ -57,17 +57,17 @@ Types: `lesson` | `decision` | `workflow` | `architecture`
 
 ## First-Time Setup
 
-For new users, run the interactive setup:
+For new users, initialize in seconds:
 
 ```bash
-memo onboarding    # interactive TUI (recommended); alias: memo init
+memo init                          # auto-detect project name + installed platforms
+memo init --interactive            # full 13-step setup wizard (embedding, reranker, etc.)
+memo init --platform claude-code   # install specific platform only
 ```
 
-This guides you through: project name → memory directory name → platform selection → workspace remote → search engine.
-
 **Tier selection:**
-- `memo onboarding` (`memo init`) — project tier, memories committed alongside code (default for teams)
-- `memo onboarding --global` (`memo init --global`) — personal tier only, private to this machine, never committed
+- `memo init` — project tier, memories committed alongside code (default for teams)
+- `memo init --global` — personal tier only, private to this machine, never committed
 
 ## Code Indexing (v0.8.0+)
 
