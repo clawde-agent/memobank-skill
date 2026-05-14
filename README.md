@@ -102,18 +102,20 @@ Claude Code's auto-memory is personal and machine-local by default. memobank add
 - Status lifecycle: `experimental → active → needs-review → deprecated`
 - Automatic stale memory detection via `memo review`
 
-**Search**
-- Default: keyword + tag + recency scoring, zero external dependencies
-- Optional: vector search via LanceDB (Ollama, OpenAI, Azure, Jina)
-
-**Safety**
-- Automatic secret redaction before every write (API keys, tokens, credentials)
-- `memo scan` blocks workspace publish if secrets are detected
+**Search & Code Analysis (v0.8.0)**
+- **Dual-track recall** — `memo recall --code` searches memories and code symbols in parallel
+- **Code Symbol Index** — `memo index-code` parses your codebase with tree-sitter (TS, JS, Py, Go, Rust, etc.)
+- **Call-graph lookup** — `memo recall --refs <symbol>` finds all callers of a function
+- **Architecture snapshot** — `memo index-code --summarize` writes a high-level system overview
 
 **Integrations**
 - Claude Code — full skill with hooks, `!` recall injection, Stop hook auto-capture
 - Cursor, Codex, Gemini CLI, Qwen Code — hooks installed via `memo onboarding`
 - Import from Claude Code, Gemini, and Qwen: `memo import --claude`
+
+**Safety**
+- Automatic secret redaction before every write (API keys, tokens, credentials)
+- `memo scan` blocks workspace publish if secrets are detected
 
 **Team workflows**
 - Workspace tier: cross-repo knowledge synced via separate Git remote
@@ -179,10 +181,18 @@ memo install --platform all
 
 ```bash
 memo recall "auth flow"                    # default: searches all configured tiers
+memo recall "auth flow" --code             # dual-track: search memories + code symbols (v0.8.0)
+memo recall --refs login                   # call-graph: find all callers of 'login' (v0.8.0)
 memo recall "auth flow" --scope project    # project (team) memories only
-memo recall "auth flow" --scope personal   # personal memories only
-memo recall "auth flow" --scope workspace  # org-wide workspace only
 memo recall "auth flow" --explain          # show keyword/tags/recency scores
+```
+
+### Code Indexing (v0.8.0)
+
+```bash
+memo index-code .                          # index current directory
+memo index-code --langs typescript,go      # filter by language
+memo index-code --summarize                # generate architecture memory
 ```
 
 ### Write memories

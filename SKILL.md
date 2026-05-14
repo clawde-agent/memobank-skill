@@ -6,7 +6,7 @@ description: >
   any coding task, debugging, or architectural work.
 hooks:
   Stop:
-    - command: "memo capture --auto 2>/dev/null || true"
+    - command: "memo capture --auto 2>/dev/null && memo process-queue --background 2>/dev/null || true"
       async: true
 user-invocable: true
 disable-model-invocation: false
@@ -36,7 +36,7 @@ You have access to a structured project memory system. Use it to avoid repeating
 
 ## Memory Context
 
-!`memo recall "$ARGUMENTS" 2>/dev/null || cat $(git rev-parse --show-toplevel 2>/dev/null)/.memobank/MEMORY.md 2>/dev/null || echo "(no memory configured — run: memo init)"`
+!`memo recall "$ARGUMENTS" --code 2>/dev/null || cat $(git rev-parse --show-toplevel 2>/dev/null)/.memobank/MEMORY.md 2>/dev/null || echo "(no memory configured — run: memo init)"`
 
 ## Memory Protocol
 
@@ -69,18 +69,28 @@ This guides you through: project name → memory directory name → platform sel
 - `memo onboarding` (`memo init`) — project tier, memories committed alongside code (default for teams)
 - `memo onboarding --global` (`memo init --global`) — personal tier only, private to this machine, never committed
 
-## Searching Memory
+## Code Indexing (v0.8.0+)
+
+Index your codebase with tree-sitter to enable code-aware recall:
+
+```bash
+memo index-code [path]           # parse codebase and store symbols in .memobank/meta/code-index.db
+memo index-code --summarize      # write architecture memory after indexing
+memo index-code --langs ts,go    # limit scan to specific languages
+```
+
+## Searching Memory & Code
 
 ```bash
 memo recall "query"                        # search all tiers (primary)
+memo recall "query" --code                 # dual-track: search memories + code symbols (v0.8.0)
+memo recall --refs <symbol>                # call-graph: find all callers of a function (v0.8.0)
 memo recall "query" --scope personal       # personal memories only
 memo recall "query" --scope project        # project (team) memories only
 memo recall "query" --scope workspace      # org-wide workspace only
 memo recall "query" --explain              # show score breakdown (keyword/tags/recency)
 memo search "query"                        # debug search, does not update MEMORY.md
 memo search "query" --engine=lancedb       # vector search (if configured)
-memo search "query" --tag=redis            # filter by tag
-memo search "query" --type=decision        # filter by type
 ```
 
 ## Three-Tier Memory
