@@ -78,6 +78,23 @@ Replace `/path/to/your-project/.memobank` with the absolute path to your project
 /memobank refactor the auth module
 ```
 
+### Code-Aware Recall (v0.8.0)
+
+Index your project to enable code-aware search:
+```bash
+memo index-code .
+```
+
+Then use the `--code` flag to search both documentation and code symbols:
+```bash
+memo recall "auth flow" --code
+```
+
+Find where a function is used:
+```bash
+memo recall --refs handleLogin
+```
+
 ### Scoped recall
 
 ```bash

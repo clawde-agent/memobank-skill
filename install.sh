@@ -18,6 +18,7 @@ NC='\033[0m' # No Color
 install_claude_code() {
   echo "→ Installing memobank skill for Claude Code..."
   mkdir -p "$SKILL_DIR/references"
+  mkdir -p "$SKILL_DIR/scripts"
 
   # Check if running from local repo or remote
   if [[ -f "./SKILL.md" ]]; then
@@ -26,12 +27,19 @@ install_claude_code() {
     for f in claude-code.md memory-protocol.md fallback.md codex.md cursor.md gemini.md qwen.md; do
       [[ -f "./references/$f" ]] && cp "./references/$f" "$SKILL_DIR/references/$f"
     done
+    if [[ -f "./scripts/recall-context.sh" ]]; then
+      cp ./scripts/recall-context.sh "$SKILL_DIR/scripts/recall-context.sh"
+      chmod +x "$SKILL_DIR/scripts/recall-context.sh"
+    fi
   else
     # Remote install
     curl -fsSL "$SKILL_REPO/raw/main/SKILL.md" -o "$SKILL_DIR/SKILL.md"
     for f in claude-code.md memory-protocol.md fallback.md codex.md cursor.md gemini.md qwen.md; do
       curl -fsSL "$SKILL_REPO/raw/main/references/$f" -o "$SKILL_DIR/references/$f"
     done
+    curl -fsSL "$SKILL_REPO/raw/main/scripts/recall-context.sh" \
+      -o "$SKILL_DIR/scripts/recall-context.sh"
+    chmod +x "$SKILL_DIR/scripts/recall-context.sh"
   fi
 
   echo -e "${GREEN}✓${NC} Skill installed: $SKILL_DIR"

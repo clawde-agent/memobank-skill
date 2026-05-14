@@ -16,12 +16,13 @@ Example: `memo recall "debug the Redis connection issue"`
 
 This retrieves top-N memories, writes them to MEMORY.md, and prints them.
 
-**Scope options:**
+**Recall options (v0.8.0+):**
 ```bash
+memo recall "query" --code             # dual-track: search memories + code symbols
+memo recall --refs <symbol>            # call-graph: find all callers of a function
 memo recall "query" --scope personal   # personal memories only
 memo recall "query" --scope project    # project (team) memories only
 memo recall "query" --scope workspace  # org-wide workspace only
-memo recall "query" --scope all        # all tiers (default)
 memo recall "query" --explain          # show keyword/tags/recency score breakdown
 ```
 
@@ -188,10 +189,19 @@ Write memories that would save a future developer time. Skip obvious or trivial 
 ### Recall
 ```bash
 memo recall "query"                      # Retrieve top-N + write MEMORY.md
+memo recall "query" --code               # Dual-track search (memories + code)
+memo recall --refs <symbol>              # Call-graph lookup
 memo recall "query" --scope personal     # Personal only
 memo recall "query" --scope project      # Project (team) only
 memo recall "query" --scope workspace    # Org-wide only
 memo recall "query" --explain            # Show score breakdown
+```
+
+### Code Indexing (v0.8.0)
+```bash
+memo index-code [path]                   # Parse codebase and store symbols
+memo index-code --summarize              # Generate architecture memory
+memo index-code --langs ts,go            # Filter by language
 ```
 
 ### Capture & Queue
