@@ -1,0 +1,20 @@
+{
+  "name": "memobank",
+  "version": "1.0.0",
+  "description": "Persistent, structured memory for AI agents — versioned in your Git repo, loaded automatically at session start",
+  "author": {
+    "name": "clawde-agent",
+    "url": "https://github.com/clawde-agent"
+  },
+  "homepage": "https://github.com/clawde-agent/memobank-skill",
+  "repository": "https://github.com/clawde-agent/memobank-skill",
+  "license": "MIT",
+  "keywords": [
+    "memory",
+    "persistent-memory",
+    "project-memory",
+    "team-knowledge",
+    "lessons-learned"
+  ],
+  "agents": "./platform/codex/AGENTS-snippet.md"
+}

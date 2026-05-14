@@ -1,0 +1,6 @@
+{
+  "name": "memobank",
+  "description": "Persistent, structured memory for AI agents — versioned in your Git repo, loaded automatically at session start",
+  "version": "1.0.0",
+  "contextFileName": "GEMINI.md"
+}
