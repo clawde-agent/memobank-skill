@@ -8,10 +8,11 @@ Complete command reference for `memo` CLI. For the memory workflow, see `memory-
 
 ```bash
 # First-time setup
-memo init                                    # auto-detect project name + platforms
-memo init --interactive                      # full 13-step TUI wizard
+memo init                                    # auto-detect project name + platforms; auto-runs memo index-code after
+memo init --interactive                      # full 13-step TUI wizard (requires interactive terminal)
 memo init --platform claude-code,cursor      # install specific platforms (comma-separated)
-memo onboarding                              # interactive wizard (alias: memo setup)
+memo onboarding                              # interactive wizard (alias: memo setup); requires raw-mode terminal
+                                             # in non-interactive environments (AI agents), use memo init instead
 
 # Lower-level directory setup
 memo install                                 # set up .memobank/ directory structure

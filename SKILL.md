@@ -78,11 +78,13 @@ memo study [lesson-name]      # promote lesson to CLAUDE.md conditional block
 ## First-Time Setup
 
 ```bash
-memo init              # auto-detect project name + platforms (recommended)
-memo onboarding        # interactive 13-step wizard (alias: memo setup)
+memo init              # auto-detect project name + platforms; also runs memo index-code automatically
+memo onboarding        # interactive 13-step TUI wizard (requires real terminal, not AI agent)
 ```
 
 For personal-only (never committed): `memo tier-init --global`
+
+> In AI agent environments (Claude Code, Codex, etc.) `memo onboarding` requires a raw-mode terminal and will exit with a helpful message. Use `memo init` instead.
 
 ## References
 
