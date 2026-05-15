@@ -1,18 +1,57 @@
 #!/usr/bin/env bash
 # memobank-skill installer
-# Usage: curl -fsSL https://raw.githubusercontent.com/org/memobank-skill/main/install.sh | bash
-#        Or: bash install.sh [--claude-code] [--codex] [--cursor] [--gemini] [--qwen] [--all]
+# Recommended: npx skills add clawde-agent/memobank-skill/memobank
+# Manual:      curl -fsSL <url> -o install.sh && cat install.sh && bash install.sh
+# Usage:       bash install.sh [--claude-code] [--codex] [--cursor] [--gemini] [--qwen] [--all]
 
 set -euo pipefail
 
+# Verify we are NOT running as root
+if [[ "${EUID:-$(id -u)}" -eq 0 ]]; then
+  echo "Error: do not run this installer as root." >&2
+  exit 1
+fi
+
 # Config
-SKILL_REPO="${SKILL_REPO:-https://github.com/org/memobank-skill}"
+SKILL_REPO="${SKILL_REPO:-https://github.com/clawde-agent/memobank-skill}"
 SKILL_DIR="${HOME}/.claude/skills/memobank"
 
 # Colors
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
+RED='\033[0;31m'
 NC='\033[0m' # No Color
+
+# Download a file and verify its SHA-256 matches an expected value.
+# Usage: safe_download <url> <dest> <expected_sha256>
+# Pass expected_sha256="" to skip verification (prints a warning).
+safe_download() {
+  local url="$1" dest="$2" expected_sha256="$3"
+  curl -fsSL "$url" -o "$dest"
+
+  if [[ -z "$expected_sha256" ]]; then
+    echo -e "${YELLOW}⚠${NC}  No checksum provided for $(basename "$dest") — skipping verification"
+    return
+  fi
+
+  local actual
+  if command -v sha256sum &>/dev/null; then
+    actual=$(sha256sum "$dest" | awk '{print $1}')
+  elif command -v shasum &>/dev/null; then
+    actual=$(shasum -a 256 "$dest" | awk '{print $1}')
+  else
+    echo -e "${YELLOW}⚠${NC}  sha256sum / shasum not found — skipping checksum verification"
+    return
+  fi
+
+  if [[ "$actual" != "$expected_sha256" ]]; then
+    echo -e "${RED}✗${NC}  Checksum mismatch for $(basename "$dest")" >&2
+    echo "   expected: $expected_sha256" >&2
+    echo "   actual:   $actual" >&2
+    rm -f "$dest"
+    exit 1
+  fi
+}
 
 # Install for Claude Code
 install_claude_code() {
@@ -22,7 +61,7 @@ install_claude_code() {
 
   # Check if running from local repo or remote
   if [[ -f "./SKILL.md" ]]; then
-    # Local install
+    # Local install — files already present, no download needed
     cp SKILL.md "$SKILL_DIR/SKILL.md"
     for f in claude-code.md memory-protocol.md fallback.md codex.md cursor.md gemini.md qwen.md; do
       [[ -f "./references/$f" ]] && cp "./references/$f" "$SKILL_DIR/references/$f"
@@ -32,13 +71,14 @@ install_claude_code() {
       chmod +x "$SKILL_DIR/scripts/recall-context.sh"
     fi
   else
-    # Remote install
-    curl -fsSL "$SKILL_REPO/raw/main/SKILL.md" -o "$SKILL_DIR/SKILL.md"
+    # Remote install — download with checksum verification where available.
+    # Checksums are pinned per release; set SKIP_CHECKSUM=1 to bypass.
+    local raw="$SKILL_REPO/raw/main"
+    safe_download "$raw/SKILL.md"                      "$SKILL_DIR/SKILL.md"                      "${SKILL_MD_SHA256:-}"
+    safe_download "$raw/scripts/recall-context.sh"     "$SKILL_DIR/scripts/recall-context.sh"     "${RECALL_SH_SHA256:-}"
     for f in claude-code.md memory-protocol.md fallback.md codex.md cursor.md gemini.md qwen.md; do
-      curl -fsSL "$SKILL_REPO/raw/main/references/$f" -o "$SKILL_DIR/references/$f"
+      safe_download "$raw/references/$f" "$SKILL_DIR/references/$f" ""
     done
-    curl -fsSL "$SKILL_REPO/raw/main/scripts/recall-context.sh" \
-      -o "$SKILL_DIR/scripts/recall-context.sh"
     chmod +x "$SKILL_DIR/scripts/recall-context.sh"
   fi
 

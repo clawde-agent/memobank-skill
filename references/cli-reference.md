@@ -32,18 +32,24 @@ memo tier-init --name <name>                 # specify project name
 ```bash
 memo recall "query"                          # search all tiers (writes to MEMORY.md)
 memo recall "query" --top <number>           # number of results (default: 5)
+memo recall "query" --engine lancedb         # search engine (text|lancedb, default: text)
+memo recall "query" --format json            # output format (text|json, default: text)
 memo recall "query" --code                   # dual-track: memories + code symbols (v0.8.0+)
 memo recall "query" --refs <symbol>          # call-graph: callers of a function (v0.8.0+)
 memo recall "query" --scope personal         # personal tier only
 memo recall "query" --scope project          # project tier only
 memo recall "query" --scope workspace        # workspace tier only
 memo recall "query" --explain                # show score breakdown (keyword/tags/recency)
-memo recall "query" --dry-run               # print without writing MEMORY.md
+memo recall "query" --dry-run                # print without writing MEMORY.md
+memo recall "query" --repo <path>            # specify memobank repo path
+memo recall "query" --silent                 # suppress stdout output
 
 memo search "query"                          # debug search — does NOT update MEMORY.md
 memo search "query" --engine lancedb         # vector search (if configured)
 memo search "query" --tag <tag>              # filter by tag
 memo search "query" --type <type>            # filter by type
+memo search "query" --format json            # output format (text|json, default: text)
+memo search "query" --repo <path>            # specify memobank repo path
 ```
 
 ---
@@ -53,6 +59,8 @@ memo search "query" --type <type>            # filter by type
 ```bash
 memo write <type> --name="..." --description="..." --tags="..." --content="..."
 memo write <type> --symbol <symbol>          # anchor memory to a code symbol
+memo write <type> --repo <path>              # specify memobank repo path
+memo write <type> --silent                   # suppress stdout output
 ```
 
 Types: `lesson` | `decision` | `workflow` | `architecture`
@@ -109,11 +117,15 @@ memo lifecycle --reset-epoch                 # reset epoch for team handoff
 memo lifecycle --tier <tier>                 # filter by tier (core|working|peripheral)
 memo lifecycle --archive                     # show archival candidates
 memo lifecycle --flagged                     # show memories flagged for review
+memo lifecycle --delete --path <file>        # delete a memory file
+memo lifecycle --repo <path>                 # specify memobank repo path
 
 memo correct <path>                          # record a correction for a memory
 memo correct <path> --reason <text>          # with reason
 
-memo review --due                            # show memories overdue for re-evaluation
+memo review                                  # list memories due for review
+memo review --due                            # only show overdue items
+memo review --format json                    # output format (text|json, default: text)
 ```
 
 **Lifecycle states:** `experimental` → `active` → `needs-review` → `deprecated`
@@ -178,6 +190,8 @@ memo migrate --rollback                      # restore previous layout
 
 ```bash
 memo capture --auto                          # extract learnings from Claude auto-memory dir
+memo capture --session <text>                # extract from explicit session text (use - for stdin)
+memo capture --repo <path>                   # specify memobank repo path
 memo capture --silent                        # suppress output (for hooks)
 memo process-queue                           # process pending memory queue
 memo process-queue --background              # spawn as background process
