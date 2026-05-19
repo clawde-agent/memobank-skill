@@ -126,7 +126,7 @@ Memories move through a lifecycle: `experimental → active → needs-review →
 
 When someone new joins a project, they clone the repo and get the team's decisions and lessons alongside the code. The Workspace tier extends this across repos. Epoch-aware scoring resets decay after team handoffs so old context doesn't crowd out new work.
 
-`memo recall --code` searches memories and your codebase in the same query. `memo index-code` parses TypeScript, Python, Go, Rust, and more with tree-sitter. `memo recall --refs <symbol>` shows every caller of a function.
+`memo recall --code` searches memories and your codebase in the same query, then expands results via the code-memory graph — symbols link to memories, memories link to related memories (up to depth 2, RRF-merged). `memo index-code` parses TypeScript, Python, Go, Rust, and more with tree-sitter. `memo recall --refs <symbol>` shows every caller of a function. When recall returns nothing, the query is logged to `recall-misses.json` for later analysis with `memo skill-feedback`.
 
 API keys, tokens, and PII are automatically redacted before any write. `memo workspace publish` refuses to run if secrets are present — nothing slips through silently.
 
@@ -137,7 +137,7 @@ API keys, tokens, and PII are automatically redacted before any write. `memo wor
 | Feature | Claude Code | Codex | Cursor | Gemini | Qwen |
 |---|---|---|---|---|---|
 | Auto recall at session start | ✅ | Manual | Manual | Manual | Manual |
-| Auto capture at session end | ✅ Stop hook | Manual | Manual | ✅ | ✅ |
+| Auto capture at session end | ✅ Stop hook (capture + study auto) | Manual | Manual | ✅ | ✅ |
 | `/memobank` skill invocation | ✅ | ❌ | ❌ | ❌ | ❌ |
 | `alwaysApply` rule | ❌ | ✅ | ✅ | ✅ | ✅ |
 

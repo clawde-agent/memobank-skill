@@ -10,8 +10,7 @@ description: >
   prior project context.
 hooks:
   Stop:
-    - command: "memo capture --auto 2>/dev/null && memo process-queue --background 2>/dev/null || true"
-      async: true
+    - command: "memo capture --auto 2>/dev/null && memo process-queue 2>/dev/null && memo study --auto --silent 2>/dev/null || true"
 user-invocable: true
 disable-model-invocation: false
 allowed-tools: Bash(memo *)
@@ -62,7 +61,7 @@ memo write <type> --name="<slug>" --description="<one sentence>" --tags="<t1>,<t
 The Stop hook captures automatically — do not call `memo capture` manually:
 
 ```
-memo capture --auto && memo process-queue --background
+memo capture --auto && memo process-queue && memo study --auto --silent
 ```
 
 ---
