@@ -1,0 +1,9 @@
+display_name: memobank
+short_description: Persistent memory system for AI agents
+brand_color: "#4A90E2"
+allow_implicit_invocation: true
+tools:
+  - type: cli
+    value: memo
+    description: memobank CLI — required for full functionality
+    install_hint: "npm install -g memobank-cli"

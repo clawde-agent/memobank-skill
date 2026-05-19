@@ -196,3 +196,23 @@ memo capture --silent                        # suppress output (for hooks)
 memo process-queue                           # process pending memory queue
 memo process-queue --background              # spawn as background process
 ```
+
+---
+
+## Distillation (v0.10.0+)
+
+Promotes or synthesizes memories across tiers and formats.
+
+```bash
+memo distill --to personal                   # copy project memories into personal tier (~/.memobank/<project>/)
+memo distill --to workspace                  # copy project memories into workspace tier
+memo distill --to scenes                     # cluster memories by tag similarity and synthesize narrative scene files via LLM
+memo distill --to <tier> --repo <path>       # specify memobank repo path
+memo distill --to <tier> --silent            # suppress output
+```
+
+### `--to scenes` detail
+
+`memo distill --to scenes` groups memories by tag overlap, calls the LLM once per cluster, and writes a narrative Markdown scene to `.memobank/scenes/<topic-YYYY-MM>.md`. A `scene_index.json` tracks up to 20 scenes with heat scores (most-recalled scenes rank higher). On every `memo recall` run, a scene navigation block is injected into `MEMORY.md` so the AI has a high-level map of project knowledge alongside raw memory entries.
+
+Requires an LLM API key (`llm.apiKey` in config or `OPENAI_API_KEY` env var).

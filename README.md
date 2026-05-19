@@ -1,5 +1,11 @@
 # memobank
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![skills.sh](https://img.shields.io/badge/skills.sh-memobank-blue.svg)](https://www.skills.sh/s/clawde-agent/memobank-skill/memobank)
+[![Works with Claude Code](https://img.shields.io/badge/Claude%20Code-skill-blueviolet.svg)](https://claude.ai/code)
+[![Works with Cursor](https://img.shields.io/badge/Cursor-supported-green.svg)](https://cursor.sh)
+[![Snyk](https://img.shields.io/badge/security-audited-brightgreen.svg)](https://www.skills.sh/audits)
+
 **AI agents forget everything between sessions. memobank teaches them to learn.**
 
 Most tools give AI a memory. memobank gives it a learning loop — capturing what worked, surfacing it when relevant, and moving domain knowledge across teammates, tools, and time.
