@@ -207,6 +207,8 @@ Promotes or synthesizes memories across tiers and formats.
 memo distill --to personal                   # copy project memories into personal tier (~/.memobank/<project>/)
 memo distill --to workspace                  # copy project memories into workspace tier
 memo distill --to scenes                     # cluster memories by tag similarity and synthesize narrative scene files via LLM
+memo distill --to <tier> --repo <path>       # specify memobank repo path
+memo distill --to <tier> --silent            # suppress output
 ```
 
 ### `--to scenes` detail
