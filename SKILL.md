@@ -61,6 +61,7 @@ memo recall "query" --code    # dual-track: memories + code symbols (v0.8.0+)
 memo search "query"           # debug search — does NOT update MEMORY.md
 memo map                      # show memory statistics
 memo study [lesson-name]      # promote lesson to CLAUDE.md conditional block
+memo distill --to scenes      # synthesize narrative scene files from clustered memories (v0.10.0+)
 ```
 
 ## Three-Tier Memory

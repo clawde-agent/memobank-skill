@@ -63,7 +63,7 @@ install_claude_code() {
   if [[ -f "./SKILL.md" ]]; then
     # Local install — files already present, no download needed
     cp SKILL.md "$SKILL_DIR/SKILL.md"
-    for f in claude-code.md memory-protocol.md fallback.md codex.md cursor.md gemini.md qwen.md; do
+    for f in cli-reference.md claude-code.md memory-protocol.md fallback.md codex.md cursor.md gemini.md qwen.md; do
       [[ -f "./references/$f" ]] && cp "./references/$f" "$SKILL_DIR/references/$f"
     done
     if [[ -f "./scripts/recall-context.sh" ]]; then
@@ -76,7 +76,7 @@ install_claude_code() {
     local raw="$SKILL_REPO/raw/main"
     safe_download "$raw/SKILL.md"                      "$SKILL_DIR/SKILL.md"                      "${SKILL_MD_SHA256:-}"
     safe_download "$raw/scripts/recall-context.sh"     "$SKILL_DIR/scripts/recall-context.sh"     "${RECALL_SH_SHA256:-}"
-    for f in claude-code.md memory-protocol.md fallback.md codex.md cursor.md gemini.md qwen.md; do
+    for f in cli-reference.md claude-code.md memory-protocol.md fallback.md codex.md cursor.md gemini.md qwen.md; do
       safe_download "$raw/references/$f" "$SKILL_DIR/references/$f" ""
     done
     chmod +x "$SKILL_DIR/scripts/recall-context.sh"
