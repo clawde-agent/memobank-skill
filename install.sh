@@ -70,6 +70,10 @@ install_claude_code() {
       cp ./scripts/recall-context.sh "$SKILL_DIR/scripts/recall-context.sh"
       chmod +x "$SKILL_DIR/scripts/recall-context.sh"
     fi
+    mkdir -p "$SKILL_DIR/assets"
+    for f in memory-decision-tree.md memory-templates.md; do
+      [[ -f "./assets/$f" ]] && cp "./assets/$f" "$SKILL_DIR/assets/$f"
+    done
   else
     # Remote install — download with checksum verification where available.
     # Checksums are pinned per release; set SKIP_CHECKSUM=1 to bypass.
@@ -80,6 +84,10 @@ install_claude_code() {
       safe_download "$raw/references/$f" "$SKILL_DIR/references/$f" ""
     done
     chmod +x "$SKILL_DIR/scripts/recall-context.sh"
+    mkdir -p "$SKILL_DIR/assets"
+    for f in memory-decision-tree.md memory-templates.md; do
+      safe_download "$raw/assets/$f" "$SKILL_DIR/assets/$f" ""
+    done
   fi
 
   echo -e "${GREEN}✓${NC} Skill installed: $SKILL_DIR"
