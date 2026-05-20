@@ -59,14 +59,18 @@ Add to `~/.claude/settings.json`:
   "autoMemoryDirectory": "/path/to/your-project/.memobank",
   "hooks": {
     "Stop": [
-      { "command": "memo capture --auto" },
-      { "command": "memo process-queue --background" }
+      { "command": "memo capture --auto 2>/dev/null && memo process-queue 2>/dev/null && memo study --auto --silent 2>/dev/null || true" }
     ]
   }
 }
 ```
 
 Replace `/path/to/your-project/.memobank` with the absolute path to your project memory directory (whatever name you chose during `memo onboarding` — default is `.memobank`).
+
+The Stop hook runs three steps synchronously:
+1. `memo capture --auto` — extract learnings + write session checkpoint if mid-task
+2. `memo process-queue` — dedup and write pending memories to files
+3. `memo study --auto --silent` — scan access logs and suggest high-recall lessons for CLAUDE.md promotion
 
 ## Usage
 
@@ -162,12 +166,11 @@ If memo is not installed: `npm install -g memobank-cli`
 
 ### Auto-capture not working
 
-Check `~/.claude/settings.json` has the Stop hooks (run `memo install --platform claude-code` to add them automatically):
+Check `~/.claude/settings.json` has the Stop hook (run `memo install --platform claude-code` to add it automatically):
 ```json
 "hooks": {
   "Stop": [
-    { "command": "memo capture --auto" },
-    { "command": "memo process-queue --background" }
+    { "command": "memo capture --auto 2>/dev/null && memo process-queue 2>/dev/null && memo study --auto --silent 2>/dev/null || true" }
   ]
 }
 ```

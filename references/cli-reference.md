@@ -34,7 +34,7 @@ memo recall "query"                          # search all tiers (writes to MEMOR
 memo recall "query" --top <number>           # number of results (default: 5)
 memo recall "query" --engine lancedb         # search engine (text|lancedb, default: text)
 memo recall "query" --format json            # output format (text|json, default: text)
-memo recall "query" --code                   # dual-track: memories + code symbols (v0.8.0+)
+memo recall "query" --code                   # dual-track: memories + code symbols + graph expansion (v0.8.0+; graph path added v0.11.0)
 memo recall "query" --refs <symbol>          # call-graph: callers of a function (v0.8.0+)
 memo recall "query" --scope personal         # personal tier only
 memo recall "query" --scope project          # project tier only
@@ -73,6 +73,16 @@ Types: `lesson` | `decision` | `workflow` | `architecture`
 memo study [lesson-name]                     # promote lesson to CLAUDE.md conditional block
 memo study --list                            # list available lessons
 memo study --if <condition>                  # specify condition (skips interactive prompt)
+memo study --auto                            # scan access logs, identify high-recall lessons, write meta/study-suggestions.json (7-day cooldown per lesson)
+memo study --auto --silent                   # same, suppress output (used by Stop hook)
+```
+
+---
+
+## Skill Feedback (v0.11.0+)
+
+```bash
+memo skill-feedback                          # report recall miss rate, memories never recalled, and isolated graph nodes (no edges)
 ```
 
 ---
@@ -93,7 +103,10 @@ memo index-code [path]                       # index codebase symbols for recall
 memo index-code --summarize                  # write architecture memory after indexing
 memo index-code --langs ts,go                # limit to specific languages
 memo index-code --force                      # re-index all files (ignore hash cache)
+memo index-code --incremental --files <...>  # hook mode: re-index only specified files (post-commit hook)
 ```
+
+`memo index-code` also builds a `memory_edges` table linking symbols → memories (`mentions` edges) and memories → related memories (`related_to` edges via tag Jaccard overlap). This enables graph-expanded recall via path C in `memo recall`. (v0.11.0+)
 
 ---
 
@@ -190,12 +203,18 @@ memo migrate --rollback                      # restore previous layout
 
 ```bash
 memo capture --auto                          # extract learnings from Claude auto-memory dir
+                                             # also injects git working state so the LLM can write a
+                                             # session-checkpoint-<date> workflow memory when a session ends mid-task
 memo capture --session <text>                # extract from explicit session text (use - for stdin)
 memo capture --repo <path>                   # specify memobank repo path
 memo capture --silent                        # suppress output (for hooks)
 memo process-queue                           # process pending memory queue
 memo process-queue --background              # spawn as background process
 ```
+
+**Session checkpoint** (v0.11.0+): when `memo capture --auto` runs at session end and detects uncommitted git changes, it appends a `[GIT STATE]` block to the LLM context. The smart extractor writes a `session-checkpoint-<date>` workflow memory with Task / Done / Next / Files sections. If no API key is configured, a simpler checkpoint is written directly from git state as a fallback.
+
+Zero-result queries are logged to `meta/recall-misses.json` for later analysis with `memo skill-feedback`.
 
 ---
 
