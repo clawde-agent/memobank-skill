@@ -57,6 +57,7 @@ For frontmatter structure, copy the relevant template from `assets/memory-templa
 
 ```bash
 memo write <type> --name="<slug>" --description="<one sentence>" --tags="<t1>,<t2>" --content="<body>"
+memo correct <memory-path>   # when a recalled memory proves wrong — record the correction immediately
 ```
 
 ### 3. On End `[LOW FREEDOM]`
@@ -97,6 +98,8 @@ memo map                         # memory statistics
 memo study <lesson-name>         # promote lesson → CLAUDE.md
 memo study --auto                # identify high-recall lessons; writes study suggestions
 memo skill-feedback              # recall miss rate, never-recalled memories, graph isolation
+memo correct <path>              # record a correction when a recalled memory proves wrong
+memo review                      # list memories overdue for manual review
 memo distill --to scenes         # synthesize narrative scene files via LLM
 memo lifecycle --scan            # auto-downgrade stale memories
 memo workspace sync              # pull latest org memories from shared workspace
