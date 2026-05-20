@@ -5,12 +5,14 @@ description: >
   and workflows before any coding task, debugging session, or architectural
   work. Captures new learnings automatically at session end via Stop hook.
   Supports lifecycle-aware memory promotion, scene distillation, and
-  CLAUDE.md self-improvement. NOT for: projects without a .memobank/
-  directory, pure documentation writing, or one-shot scripts with no
-  prior project context.
+  CLAUDE.md self-improvement. Trigger when: starting a task and needing
+  prior context, after fixing a non-obvious bug, or after making a key
+  architectural decision. NOT for: projects without a .memobank/ directory,
+  pure documentation writing, or one-shot scripts with no prior context.
 hooks:
   Stop:
-    - command: "memo capture --auto 2>/dev/null && memo process-queue 2>/dev/null && memo study --auto --silent 2>/dev/null || true"
+    - command: "memo capture --auto 2>/dev/null && memo process-queue --background 2>/dev/null || true"
+      async: true
 user-invocable: true
 disable-model-invocation: false
 allowed-tools: Bash(memo *)
@@ -35,6 +37,7 @@ Recall relevant context before starting work:
 ```bash
 memo recall "<task-or-topic>"           # search memories + write to MEMORY.md
 memo recall "<topic>" --code            # dual-track: memories + code symbols
+memo index-code                         # (one-time) index codebase for --code recall
 ```
 
 ### 2. During Work `[HIGH FREEDOM]`
@@ -58,10 +61,12 @@ memo write <type> --name="<slug>" --description="<one sentence>" --tags="<t1>,<t
 
 ### 3. On End `[LOW FREEDOM]`
 
-The Stop hook captures automatically — do not call `memo capture` manually:
+The Stop hook captures and queues automatically — do not call `memo capture` manually.
 
-```
-memo capture --auto && memo process-queue && memo study --auto --silent
+To promote frequently-recalled lessons into CLAUDE.md:
+
+```bash
+memo study --auto   # identify high-recall lessons; review suggestions before accepting
 ```
 
 ---
@@ -86,12 +91,15 @@ For full tier and distillation decision logic, read `assets/memory-decision-tree
 memo recall "query"              # search + update MEMORY.md
 memo recall "query" --code       # memories + code symbols + graph expansion
 memo write <type> ...            # create a memory (see assets/memory-templates.md)
+memo index-code                  # index codebase for --code recall (one-time per project)
+memo import --all                # import memories from other AI tools (Cursor, Codex, Gemini)
 memo map                         # memory statistics
 memo study <lesson-name>         # promote lesson → CLAUDE.md
-memo study --auto                # scan access logs, write study suggestions (7-day cooldown)
-memo skill-feedback              # recall miss rate, never-recalled memories, isolated graph nodes
+memo study --auto                # identify high-recall lessons; writes study suggestions
+memo skill-feedback              # recall miss rate, never-recalled memories, graph isolation
 memo distill --to scenes         # synthesize narrative scene files via LLM
 memo lifecycle --scan            # auto-downgrade stale memories
+memo workspace sync              # pull latest org memories from shared workspace
 ```
 
 ---
