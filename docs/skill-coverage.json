@@ -4,9 +4,9 @@
   "source_cli": "references/cli-reference.md",
   "summary": {
     "total_commands": 22,
-    "covered": 12,
-    "not_covered": 10,
-    "coverage_pct": 55
+    "covered": 14,
+    "not_covered": 8,
+    "coverage_pct": 64
   },
   "commands": [
     { "cmd": "memo recall",        "category": "recall",     "covered": true,  "where": "Phase 1, Quick Reference" },
@@ -18,8 +18,8 @@
     { "cmd": "memo index-code",    "category": "code",       "covered": true,  "where": "Phase 1, Quick Reference" },
     { "cmd": "memo index",         "category": "code",       "covered": false, "note": "superseded by index-code" },
     { "cmd": "memo lifecycle",     "category": "lifecycle",  "covered": true,  "where": "Quick Reference, decision tree" },
-    { "cmd": "memo correct",       "category": "lifecycle",  "covered": false },
-    { "cmd": "memo review",        "category": "lifecycle",  "covered": false },
+    { "cmd": "memo correct",       "category": "lifecycle",  "covered": true,  "where": "Phase 2, Quick Reference" },
+    { "cmd": "memo review",        "category": "lifecycle",  "covered": true,  "where": "Quick Reference" },
     { "cmd": "memo workspace",     "category": "workspace",  "covered": true,  "where": "Quick Reference (sync), decision tree (publish)" },
     { "cmd": "memo scan",          "category": "security",   "covered": false },
     { "cmd": "memo import",        "category": "import",     "covered": true,  "where": "Quick Reference" },
