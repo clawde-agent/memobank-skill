@@ -22,7 +22,7 @@ memobank borrows from how humans actually learn, not just remember:
 
 **Spaced repetition.** Memories recalled regularly get promoted to `active`. Ones that go unused drift toward `deprecated`. The agent stops treating a three-year-old architectural decision the same as something that came up last week.
 
-**Domain knowledge transfer.** The Workspace tier lets a team codify decisions and lessons once, then share them across every repo. A new engineer — or a fresh AI session — clones the repo and starts with months of context, not a blank slate.
+**Domain knowledge transfer.** The Workspace tier lets a team codify decisions and lessons once, then share them across every repo. This includes non-technical knowledge — business decisions, BA requirements analysis, PO/stakeholder agreements, and project governance context that doesn't belong in a codebase. A new engineer — or a fresh AI session — clones the repo and starts with months of context, not a blank slate. Any existing wiki or docs repo can serve as the workspace remote.
 
 **Structure over logs.** Raw chat history is noise. memobank enforces four typed formats (`lesson`, `decision`, `workflow`, `architecture`) so captured knowledge stays findable.
 
@@ -89,7 +89,7 @@ Three knowledge tiers, like `git config` levels:
 |------|----------|-----------|-------|
 | Personal | `~/.memobank/<project>/` | No | Your machine only |
 | Project | `<repo>/.memobank/` | Yes | Everyone who clones |
-| Workspace | `~/.memobank/_workspace/` | Separate remote | Across multiple repos |
+| Workspace | `~/.memobank/_workspace/` | Separate remote | Cross-repo engineering patterns; business decisions, BA/PO context, stakeholder agreements, and non-code project knowledge — any existing wiki or docs repo can serve as the remote |
 
 `memo recall` searches all active tiers, merges results, and writes top matches to `.memobank/MEMORY.md`. The skill loads that file at session start. No plugins, no configuration beyond `memo onboarding`.
 
