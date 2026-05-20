@@ -8,7 +8,7 @@
 
 **AI agents forget everything between sessions. memobank teaches them to learn.**
 
-Most tools give AI a memory. memobank gives it a learning loop — capturing what worked, surfacing it when relevant, and moving domain knowledge across teammates, tools, and time.
+Most tools give AI a memory. memobank builds a learning loop on top: what worked gets captured, resurfaced at the right moment, and carried across teammates, tools, and time.
 
 Works with **Claude Code, Cursor, Codex, Gemini CLI, and Qwen Code**. Zero external services.
 
@@ -20,11 +20,11 @@ A parrot with perfect recall is still just a parrot.
 
 memobank borrows from how humans actually learn, not just remember:
 
-**Spaced repetition.** Memories recalled regularly get promoted to `active`. Ones that go unused drift toward `deprecated`. The agent stops treating a three-year-old architectural decision the same as something that came up last week.
+Memories recalled regularly get promoted to `active`; unused ones drift toward `deprecated`. The agent stops treating a three-year-old architectural decision the same as last week's.
 
-**Domain knowledge transfer.** The Workspace tier lets a team codify decisions and lessons once, then share them across every repo. A new engineer — or a fresh AI session — clones the repo and starts with months of context, not a blank slate.
+The Workspace tier lets a team codify decisions and lessons once, then share them across every repo. This includes non-technical knowledge: business decisions, BA requirements analysis, PO/stakeholder agreements, and project governance context that doesn't belong in a codebase. A new engineer (or a fresh AI session) clones the repo and starts with months of context. Any existing wiki or docs repo can serve as the workspace remote.
 
-**Structure over logs.** Raw chat history is noise. memobank enforces four typed formats (`lesson`, `decision`, `workflow`, `architecture`) so captured knowledge stays findable.
+Raw chat history is noise. memobank enforces four typed formats (`lesson`, `decision`, `workflow`, `architecture`) so captured knowledge stays findable.
 
 ---
 
@@ -89,7 +89,7 @@ Three knowledge tiers, like `git config` levels:
 |------|----------|-----------|-------|
 | Personal | `~/.memobank/<project>/` | No | Your machine only |
 | Project | `<repo>/.memobank/` | Yes | Everyone who clones |
-| Workspace | `~/.memobank/_workspace/` | Separate remote | Across multiple repos |
+| Workspace | `~/.memobank/_workspace/` | Separate remote | Cross-repo engineering patterns; business decisions, BA/PO context, stakeholder agreements, and non-code project knowledge — any existing wiki or docs repo can serve as the remote |
 
 `memo recall` searches all active tiers, merges results, and writes top matches to `.memobank/MEMORY.md`. The skill loads that file at session start. No plugins, no configuration beyond `memo onboarding`.
 
@@ -122,13 +122,13 @@ We switched from npm to pnpm in March 2026. Faster installs, better monorepo sup
 
 ## What you get
 
-Memories move through a lifecycle: `experimental → active → needs-review → deprecated`. Frequently recalled knowledge gets promoted; unused knowledge fades. The agent's working context self-curates — you don't prune it manually.
+Memories move through a lifecycle: `experimental → active → needs-review → deprecated`. Frequently recalled knowledge gets promoted; unused knowledge fades. The agent's working context self-curates. You don't prune it manually.
 
 When someone new joins a project, they clone the repo and get the team's decisions and lessons alongside the code. The Workspace tier extends this across repos. Epoch-aware scoring resets decay after team handoffs so old context doesn't crowd out new work.
 
-`memo recall --code` searches memories and your codebase in the same query, then expands results via the code-memory graph — symbols link to memories, memories link to related memories (up to depth 2, RRF-merged). `memo index-code` parses TypeScript, Python, Go, Rust, and more with tree-sitter. `memo recall --refs <symbol>` shows every caller of a function. When recall returns nothing, the query is logged to `recall-misses.json` for later analysis with `memo skill-feedback`.
+`memo recall --code` searches memories and your codebase together, then expands results via the code-memory graph (symbols link to memories, memories link to related memories, up to depth 2, RRF-merged). `memo index-code` parses TypeScript, Python, Go, Rust, and more with tree-sitter. `memo recall --refs <symbol>` shows every caller of a function. When recall returns nothing, the query is logged to `recall-misses.json` for later analysis with `memo skill-feedback`.
 
-API keys, tokens, and PII are automatically redacted before any write. `memo workspace publish` refuses to run if secrets are present — nothing slips through silently.
+API keys, tokens, and PII are automatically redacted before any write. `memo workspace publish` refuses to run if secrets are detected.
 
 ---
 

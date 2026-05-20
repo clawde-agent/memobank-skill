@@ -78,7 +78,7 @@ memo study --auto   # identify high-recall lessons; review suggestions before ac
 |------|----------|-----------|---------|
 | **Personal** | `~/.memobank/<project>/` | No | Private notes, machine quirks |
 | **Project** | `<repo-root>/.memobank/` | Yes | Team lessons, ADRs, runbooks |
-| **Workspace** | `~/.memobank/_workspace/` | Separate remote | Cross-repo org knowledge |
+| **Workspace** | `~/.memobank/_workspace/` | Separate remote | Cross-repo org knowledge; business decisions, BA/PO context, stakeholder agreements, and non-code project knowledge that shouldn't live in a codebase — can also point to an existing wiki/docs repo |
 
 **Recall priority:** Project > Personal > Workspace.
 
