@@ -115,7 +115,15 @@ memo lifecycle --scan
 
 ## Workspace Memory (Org-Wide)
 
-Share memories across the organisation via a shared Git remote:
+Share memories across the organisation via a shared Git remote. Workspace is not limited to technical knowledge — it is the right tier for **any context that crosses repo boundaries or that belongs to the project but not the codebase**:
+
+- Cross-repo engineering patterns (deployment strategy, API standards)
+- Business decisions made by a PO, PM, or stakeholder ("we chose vendor X because…")
+- BA requirements analysis, stakeholder agreements, scope constraints
+- Project governance decisions that shouldn't live in code comments
+- Non-code project knowledge (legal constraints, compliance rules, team conventions)
+
+The remote can be a dedicated memory repo **or an existing wiki/docs repo** — point `memo workspace init` at any Git remote that holds Markdown files in a `.memobank/` subdirectory.
 
 ```bash
 memo workspace init git@github.com:your-org/platform-docs.git

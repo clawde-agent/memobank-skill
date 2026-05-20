@@ -30,9 +30,10 @@ flowchart TD
       --tags='...' \
       --content='...'"]
 
-    WHO -->|Cross-repo /\norg-wide| WS["🌐 Workspace tier
+    WHO -->|Cross-repo / org-wide /\nbiz decisions / BA+PO context /\nnon-code project knowledge| WS["🌐 Workspace tier
     memo write <type> ... then
-    memo workspace publish FILE"]
+    memo workspace publish FILE
+    (remote can be an existing wiki repo)"]
 
     PROJ --> MAT{Project mature?\n10+ memories?\nRecurring patterns?}
     MAT -->|Not yet| DONE1([Done])
