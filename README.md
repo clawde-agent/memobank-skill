@@ -47,7 +47,7 @@ All three run on every `memo recall`. Results are merged and re-ranked by recenc
 **Recommended — via skills CLI (no remote script execution):**
 
 ```bash
-npx skills add clawde-agent/memobank-skill/memobank
+npx skills add clawde-agent/memobank-skill
 memo onboarding
 ```
 
