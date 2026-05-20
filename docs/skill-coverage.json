@@ -1,0 +1,35 @@
+{
+  "generated": "2026-05-21",
+  "source_skill": "SKILL.md",
+  "source_cli": "references/cli-reference.md",
+  "summary": {
+    "total_commands": 22,
+    "covered": 12,
+    "not_covered": 10,
+    "coverage_pct": 55
+  },
+  "commands": [
+    { "cmd": "memo recall",        "category": "recall",     "covered": true,  "where": "Phase 1, Quick Reference" },
+    { "cmd": "memo search",        "category": "recall",     "covered": false, "note": "debug-only; omitted intentionally" },
+    { "cmd": "memo write",         "category": "write",      "covered": true,  "where": "Phase 2, Quick Reference" },
+    { "cmd": "memo study",         "category": "promote",    "covered": true,  "where": "Phase 3, Quick Reference" },
+    { "cmd": "memo skill-feedback","category": "health",     "covered": true,  "where": "Quick Reference" },
+    { "cmd": "memo map",           "category": "health",     "covered": true,  "where": "Quick Reference" },
+    { "cmd": "memo index-code",    "category": "code",       "covered": true,  "where": "Phase 1, Quick Reference" },
+    { "cmd": "memo index",         "category": "code",       "covered": false, "note": "superseded by index-code" },
+    { "cmd": "memo lifecycle",     "category": "lifecycle",  "covered": true,  "where": "Quick Reference, decision tree" },
+    { "cmd": "memo correct",       "category": "lifecycle",  "covered": false },
+    { "cmd": "memo review",        "category": "lifecycle",  "covered": false },
+    { "cmd": "memo workspace",     "category": "workspace",  "covered": true,  "where": "Quick Reference (sync), decision tree (publish)" },
+    { "cmd": "memo scan",          "category": "security",   "covered": false },
+    { "cmd": "memo import",        "category": "import",     "covered": true,  "where": "Quick Reference" },
+    { "cmd": "memo distill",       "category": "distill",    "covered": true,  "where": "Quick Reference, decision tree" },
+    { "cmd": "memo capture",       "category": "capture",    "covered": true,  "where": "Stop hook, Phase 3" },
+    { "cmd": "memo process-queue", "category": "capture",    "covered": true,  "where": "Stop hook" },
+    { "cmd": "memo init",          "category": "setup",      "covered": false, "note": "one-time setup; not agent workflow" },
+    { "cmd": "memo install",       "category": "setup",      "covered": false, "note": "one-time setup" },
+    { "cmd": "memo onboarding",    "category": "setup",      "covered": false, "note": "interactive TUI; not for AI agents" },
+    { "cmd": "memo tier-init",     "category": "setup",      "covered": false, "note": "one-time setup" },
+    { "cmd": "memo migrate",       "category": "setup",      "covered": false, "note": "one-time migration" }
+  ]
+}
