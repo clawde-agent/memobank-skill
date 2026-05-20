@@ -9,7 +9,7 @@
     {
       "name": "memobank",
       "description": "Persistent memory system for AI agents — recalls past decisions before any coding task, captures learnings at session end, supports lifecycle promotion and scene distillation. NOT for projects without .memobank/.",
-      "version": "1.1.0",
+      "version": "1.2.0",
       "source": "./",
       "author": {
         "name": "clawde-agent",

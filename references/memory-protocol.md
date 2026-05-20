@@ -197,19 +197,35 @@ memo recall "query" --scope workspace    # Org-wide only
 memo recall "query" --explain            # Show score breakdown
 ```
 
-### Code Indexing (v0.8.0)
+### Code Indexing (v0.8.0+)
 ```bash
 memo index-code [path]                   # Parse codebase and store symbols
 memo index-code --summarize              # Generate architecture memory
 memo index-code --langs ts,go            # Filter by language
+memo index-code --incremental --files …  # Re-index specific files (post-commit hook mode)
+```
+
+v0.11.0+: also builds a `memory_edges` table linking symbols → memories and memories → related memories (Jaccard tag overlap). `memo recall --code` traverses this graph up to depth 2 and merges graph-adjacent memories via RRF (path C).
+
+### Skill Feedback (v0.11.0+)
+```bash
+memo skill-feedback                      # Recall miss rate, never-recalled memories, isolated graph nodes
 ```
 
 ### Capture & Queue
 ```bash
 memo capture --auto                      # Extract from Claude auto-memory files → pending queue
+                                         # Injects git state for mid-task session checkpoints (v0.11.0+)
 memo process-queue                       # Drain pending queue: dedup + write to memory files
-memo process-queue --background          # Same, detached background process (used by Stop hook)
+memo process-queue --background          # Same, detached background process
 ```
+
+The Stop hook runs all three capture steps synchronously:
+```
+memo capture --auto && memo process-queue && memo study --auto --silent
+```
+
+**Session checkpoint** (v0.11.0+): when `capture --auto` detects uncommitted git changes, it appends a `[GIT STATE]` block to the LLM context. The extractor writes a `workflow/session-checkpoint-<date>.md` memory with Task / Done / Next / Files sections — enabling session resumption without manual handoff notes. Falls back to a git-only checkpoint if no API key is configured.
 
 ### Write
 ```bash

@@ -84,10 +84,12 @@ For full tier and distillation decision logic, read `assets/memory-decision-tree
 
 ```bash
 memo recall "query"              # search + update MEMORY.md
-memo recall "query" --code       # memories + code symbols
+memo recall "query" --code       # memories + code symbols + graph expansion
 memo write <type> ...            # create a memory (see assets/memory-templates.md)
 memo map                         # memory statistics
 memo study <lesson-name>         # promote lesson → CLAUDE.md
+memo study --auto                # scan access logs, write study suggestions (7-day cooldown)
+memo skill-feedback              # recall miss rate, never-recalled memories, isolated graph nodes
 memo distill --to scenes         # synthesize narrative scene files via LLM
 memo lifecycle --scan            # auto-downgrade stale memories
 ```
