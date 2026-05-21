@@ -47,7 +47,7 @@ All three run on every `memo recall`. Results are merged and re-ranked by recenc
 **Recommended — via skills CLI (no remote script execution):**
 
 ```bash
-npx skills add clawde-agent/memobank-skill/memobank
+npx skills add clawde-agent/memobank-skill
 memo onboarding
 ```
 
@@ -89,7 +89,7 @@ Three knowledge tiers, like `git config` levels:
 |------|----------|-----------|-------|
 | Personal | `~/.memobank/<project>/` | No | Your machine only |
 | Project | `<repo>/.memobank/` | Yes | Everyone who clones |
-| Workspace | `~/.memobank/_workspace/` | Separate remote | Cross-repo engineering patterns; business decisions, BA/PO context, stakeholder agreements, and non-code project knowledge — any existing wiki or docs repo can serve as the remote |
+| Workspace | `~/.memobank/_workspace/` | Separate remote | Cross-repo engineering patterns; business decisions, BA/PO context, stakeholder agreements, and non-code project knowledge. Any existing wiki or docs repo can serve as the remote. |
 
 `memo recall` searches all active tiers, merges results, and writes top matches to `.memobank/MEMORY.md`. The skill loads that file at session start. No plugins, no configuration beyond `memo onboarding`.
 
