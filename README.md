@@ -1,7 +1,15 @@
-# memobank
+# memobank (ARCHIVED)
+
+> **This repository is archived.** The memobank skill has moved to [memobank-cli](https://github.com/clawde-agent/memobank-cli).
+>
+> **Install:**
+> ```bash
+> npm install -g memobank-cli
+> bash <(curl -fsSL https://raw.githubusercontent.com/clawde-agent/memobank-cli/main/skills/memobank/install.sh)
+> ```
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![skills.sh](https://img.shields.io/badge/skills.sh-memobank-blue.svg)](https://www.skills.sh/s/clawde-agent/memobank-skill/memobank)
+[![Archived](https://img.shields.io/badge/status-archived-red.svg)](https://github.com/clawde-agent/memobank-cli)
 [![Works with Claude Code](https://img.shields.io/badge/Claude%20Code-skill-blueviolet.svg)](https://claude.ai/code)
 [![Works with Cursor](https://img.shields.io/badge/Cursor-supported-green.svg)](https://cursor.sh)
 [![Snyk](https://img.shields.io/badge/security-audited-brightgreen.svg)](https://www.skills.sh/audits)
