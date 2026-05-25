@@ -1,6 +1,6 @@
 {
-  "name": "memobank-dev",
-  "description": "Development marketplace for memobank skill",
+  "name": "memobank-skill",
+  "description": "[DEPRECATED] Skill has moved to memobank-cli. See https://github.com/clawde-agent/memobank-cli",
   "owner": {
     "name": "clawde-agent",
     "url": "https://github.com/clawde-agent"
@@ -8,9 +8,13 @@
   "plugins": [
     {
       "name": "memobank",
-      "description": "Persistent memory system for AI agents — recalls past decisions before any coding task, captures learnings at session end, supports lifecycle promotion and scene distillation. NOT for projects without .memobank/.",
+      "description": "[DEPRECATED] Moved to memobank-cli. Install: claude plugin marketplace add clawde-agent/memobank-cli && claude plugin install memobank@memobank-cli",
       "version": "1.2.0",
-      "source": "./",
+      "source": {
+        "source": "github",
+        "repo": "clawde-agent/memobank-cli",
+        "path": "skills/memobank"
+      },
       "author": {
         "name": "clawde-agent",
         "url": "https://github.com/clawde-agent"
